@@ -273,6 +273,17 @@
       background:#0f1d30;border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:var(--shadow)
     }
     .modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}
+    .invite-link-box{
+      display:flex;gap:8px;align-items:center;
+      background:#091526;border:1px solid var(--border);
+      border-radius:12px;padding:8px;margin-top:10px
+    }
+    .invite-link-box input{
+      flex:1;min-width:0;background:transparent;border:none;color:#dbeafe;
+      outline:none;padding:7px;font-size:13px
+    }
+    .invite-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+    @media(max-width:560px){.invite-actions{grid-template-columns:1fr}}
     .close{background:transparent;border:none;color:var(--muted);font-size:25px}
     .participants{display:flex;flex-wrap:wrap;gap:9px}
     .person-chip{padding:9px 11px;border-radius:999px;background:#13243a;border:1px solid var(--border);font-size:12px}
@@ -334,6 +345,7 @@
           <div class="field"><label>E-mail</label><input id="loginEmail" type="email" placeholder="voce@email.com"></div>
           <div class="field"><label>Senha</label><input id="loginPass" type="password" placeholder="••••••"></div>
           <button class="btn btn-primary" onclick="login()">Entrar no bolão</button>
+          <button class="btn btn-ghost" style="width:100%" onclick="openForgotPassword()">Esqueci minha senha</button>
         </div>
       </div>
 
@@ -358,7 +370,7 @@
           <div>Bolão da Galera<small id="currentPoolMini">Meu Bolão</small></div>
         </div>
         <div class="top-actions">
-          <span class="chip" id="dbChip">🟢 Supabase • V12.2</span>
+          <span class="chip" id="dbChip">🟢 Supabase • V12.4</span>
           <select class="chip" id="poolSelect" onchange="selectPool(this.value)" style="display:none"></select>
           <span class="chip" id="capacityChip">0/30 participantes</span>
           <span class="chip" id="userChip">Usuário</span>
@@ -706,6 +718,74 @@
     </div>
   </div>
 
+  <div id="shareInviteModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 style="margin:0">📨 Convidar amigos</h3>
+        <button class="close" onclick="closeModal('shareInviteModal')">×</button>
+      </div>
+
+      <div class="notice">
+        Envie este link para seus amigos. Ao abrir, o código do bolão já será identificado automaticamente.
+      </div>
+
+      <div class="invite-link-box">
+        <input id="shareInviteLink" readonly>
+        <button class="btn btn-secondary" onclick="copyInviteLink()">Copiar link</button>
+      </div>
+
+      <div class="invite-actions">
+        <button class="btn btn-primary" onclick="shareViaWhatsApp()">WhatsApp</button>
+        <button class="btn btn-secondary" onclick="nativeShareInvite()">Compartilhar</button>
+        <button class="btn btn-ghost" onclick="copyFullInvite()">Copiar convite</button>
+      </div>
+
+      <div style="margin-top:12px;color:var(--muted);font-size:12px;line-height:1.5">
+        Código do bolão: <strong id="shareInviteCode"></strong>
+      </div>
+    </div>
+  </div>
+
+  <div id="forgotPasswordModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 style="margin:0">🔐 Recuperar senha</h3>
+        <button class="close" onclick="closeModal('forgotPasswordModal')">×</button>
+      </div>
+      <p style="color:var(--muted);line-height:1.6">
+        Informe o e-mail da sua conta. Você receberá um link para criar uma nova senha.
+      </p>
+      <div class="field">
+        <label>E-mail</label>
+        <input id="forgotEmail" type="email" placeholder="voce@email.com">
+      </div>
+      <div style="height:12px"></div>
+      <button class="btn btn-primary" style="width:100%" onclick="sendPasswordReset()">Enviar link de recuperação</button>
+    </div>
+  </div>
+
+  <div id="newPasswordModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 style="margin:0">🔑 Criar nova senha</h3>
+      </div>
+      <p style="color:var(--muted);line-height:1.6">
+        Digite uma nova senha com pelo menos 8 caracteres.
+      </p>
+      <div class="stack">
+        <div class="field">
+          <label>Nova senha</label>
+          <input id="newPassword" type="password" placeholder="Mínimo 8 caracteres">
+        </div>
+        <div class="field">
+          <label>Confirmar nova senha</label>
+          <input id="newPasswordConfirm" type="password" placeholder="Repita a nova senha">
+        </div>
+        <button class="btn btn-primary" onclick="saveNewPassword()">Salvar nova senha</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
 
 
@@ -743,7 +823,8 @@ const appState = {
   participants: [],
   ranking: [],
   selectedLeague: 'brasileirao',
-  selectedRoundByLeague: {brasileirao:24, premier:1}
+  selectedRoundByLeague: {brasileirao:24, premier:1},
+  inviteShare: null
 };
 
 const LEAGUES = {
@@ -842,6 +923,41 @@ function switchAuth(mode) {
   document.getElementById('registerPane').classList.toggle('hidden',login);
   document.getElementById('tabLogin').classList.toggle('active',login);
   document.getElementById('tabRegister').classList.toggle('active',!login);
+}
+
+function openForgotPassword() {
+  const current=document.getElementById('loginEmail')?.value.trim()||'';
+  const input=document.getElementById('forgotEmail');
+  if(input) input.value=current;
+  document.getElementById('forgotPasswordModal').classList.remove('hidden');
+}
+
+async function sendPasswordReset() {
+  const email=document.getElementById('forgotEmail').value.trim().toLowerCase();
+  if(!email.includes('@')) return toast('Informe um e-mail válido.',true);
+
+  const redirectTo='https://saviola968-cmyk.github.io/BOLAO-DA-GALERA/';
+  const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo});
+  if(error) return toast(friendlyError(error),true);
+
+  closeModal('forgotPasswordModal');
+  toast('Se esse e-mail estiver cadastrado, o link de recuperação será enviado.');
+}
+
+async function saveNewPassword() {
+  const p1=document.getElementById('newPassword').value;
+  const p2=document.getElementById('newPasswordConfirm').value;
+
+  if(p1.length<8) return toast('Use pelo menos 8 caracteres.',true);
+  if(p1!==p2) return toast('As senhas não conferem.',true);
+
+  const {error}=await db.auth.updateUser({password:p1});
+  if(error) return toast(friendlyError(error),true);
+
+  document.getElementById('newPassword').value='';
+  document.getElementById('newPasswordConfirm').value='';
+  closeModal('newPasswordModal');
+  toast('Senha alterada com sucesso. Agora você pode entrar em qualquer aparelho.');
 }
 
 async function login() {
@@ -1480,31 +1596,83 @@ async function inviteFriends() {
 
   const base='https://saviola968-cmyk.github.io/BOLAO-DA-GALERA/';
   const inviteUrl=`${base}?invite=${encodeURIComponent(data.invite_code)}`;
-  const message=`⚽ Bolão Da Galera
+  const fullMessage=`⚽ Bolão Da Galera
 
 Entre no bolão "${data.name}"!
 Código: ${data.invite_code}
 
 ${inviteUrl}`;
 
+  appState.inviteShare={
+    name:data.name,
+    code:data.invite_code,
+    url:inviteUrl,
+    message:fullMessage
+  };
+
+  const linkInput=document.getElementById('shareInviteLink');
+  const codeEl=document.getElementById('shareInviteCode');
+  if(linkInput) linkInput.value=inviteUrl;
+  if(codeEl) codeEl.textContent=data.invite_code;
+
+  document.getElementById('shareInviteModal').classList.remove('hidden');
+}
+
+async function copyInviteLink() {
+  const info=appState.inviteShare;
+  if(!info) return;
+
   try {
-    if(navigator.share) {
-      await navigator.share({
-        title:`Bolão Da Galera - ${data.name}`,
-        text:`Entre no bolão "${data.name}" usando o código ${data.invite_code}`,
-        url:inviteUrl
-      });
-      return;
+    await navigator.clipboard.writeText(info.url);
+    toast('Link copiado!');
+  } catch {
+    const input=document.getElementById('shareInviteLink');
+    if(input) {
+      input.focus();
+      input.select();
+      document.execCommand('copy');
+      toast('Link copiado!');
     }
-  } catch(e) {
-    if(e?.name==='AbortError') return;
+  }
+}
+
+async function copyFullInvite() {
+  const info=appState.inviteShare;
+  if(!info) return;
+
+  try {
+    await navigator.clipboard.writeText(info.message);
+    toast('Convite completo copiado!');
+  } catch {
+    prompt('Copie o convite:',info.message);
+  }
+}
+
+function shareViaWhatsApp() {
+  const info=appState.inviteShare;
+  if(!info) return;
+  const url=`https://wa.me/?text=${encodeURIComponent(info.message)}`;
+  window.open(url,'_blank','noopener');
+}
+
+async function nativeShareInvite() {
+  const info=appState.inviteShare;
+  if(!info) return;
+
+  if(!navigator.share) {
+    return copyInviteLink();
   }
 
   try {
-    await navigator.clipboard.writeText(message);
-    toast('Link do convite copiado! Agora envie para seus amigos.');
-  } catch {
-    prompt('Copie e envie este convite:',message);
+    await navigator.share({
+      title:`Bolão Da Galera - ${info.name}`,
+      text:`Entre no bolão "${info.name}" usando o código ${info.code}`,
+      url:info.url
+    });
+  } catch(e) {
+    if(e?.name!=='AbortError') {
+      await copyInviteLink();
+    }
   }
 }
 
@@ -1622,10 +1790,19 @@ db.auth.onAuthStateChange((event,session)=>{
   setTimeout(async()=>{
     appState.session=session;
     appState.user=session?.user||null;
+
+    if(event==='PASSWORD_RECOVERY') {
+      document.getElementById('loginScreen').classList.remove('hidden');
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('newPasswordModal').classList.remove('hidden');
+      return;
+    }
+
     if(!appState.user) {
       clearAppData();
       return;
     }
+
     await refreshApp();
     showPage('home');
     setTimeout(applyInviteFromUrl,150);
