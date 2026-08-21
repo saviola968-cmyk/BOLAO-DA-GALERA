@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Bolão da Galera</title>
   <style>
     :root{
@@ -355,7 +358,7 @@
           <div>Bolão da Galera<small id="currentPoolMini">Meu Bolão</small></div>
         </div>
         <div class="top-actions">
-          <span class="chip" id="dbChip">🟢 Supabase</span>
+          <span class="chip" id="dbChip">🟢 Supabase • V12.2</span>
           <select class="chip" id="poolSelect" onchange="selectPool(this.value)" style="display:none"></select>
           <span class="chip" id="capacityChip">0/30 participantes</span>
           <span class="chip" id="userChip">Usuário</span>
@@ -369,6 +372,7 @@
         <div class="nav-title">Bolão</div>
         <button class="nav-btn active" data-page="home" onclick="showPage('home')">🏠 Visão geral</button>
         <button class="nav-btn" data-page="palpites" onclick="showPage('palpites')">🎯 Meus palpites</button>
+        <button class="nav-btn" onclick="openPoolModal()">➕ Criar bolão</button>
         <button class="nav-btn" data-page="tabela" onclick="showPage('tabela')">📅 Tabela completa</button>
         <button class="nav-btn" data-page="ranking" onclick="showPage('ranking')">🏆 Ranking</button>
         <button class="nav-btn" data-page="regras" onclick="showPage('regras')">📋 Regras</button>
@@ -411,7 +415,7 @@
               <button class="btn btn-secondary" onclick="showPage('tabela')">Ver 38 rodadas</button>
               <button class="btn btn-secondary" onclick="openJoinModal()">Entrar com código</button>
               <button class="btn btn-secondary" id="inviteFriendsBtn" style="display:none" onclick="inviteFriends()">📨 Convidar amigos</button>
-              <button class="btn btn-secondary" id="createPoolBtn" style="display:none" onclick="openPoolModal()">Criar bolão</button>
+              <button class="btn btn-secondary" id="createPoolBtn" onclick="openPoolModal()">Criar bolão</button>
             </div>
           </div>
 
@@ -677,6 +681,9 @@
     <div class="modal-card">
       <div class="modal-head"><h3 style="margin:0">Entrar em um bolão</h3><button class="close" onclick="closeModal('joinModal')">×</button></div>
       <div class="field"><label>Código do bolão</label><input id="joinCode" placeholder="Ex.: GALERA26"></div>
+      <div id="inviteDetectedBox" class="notice hidden" style="margin-top:12px">
+        🔗 Convite detectado. Entre na sua conta ou crie uma conta e depois confirme a entrada no bolão.
+      </div>
       <div style="height:12px"></div>
       <button class="btn btn-primary" style="width:100%" onclick="joinPool()">Entrar no bolão</button>
     </div>
@@ -1123,7 +1130,7 @@ function emptyPoolMessage() {
   if(isAdmin()) {
     return '<div class="empty">Nenhum bolão criado ainda. Clique em <strong>Criar bolão</strong> para iniciar.</div>';
   }
-  return '<div class="empty">Você ainda não participa de um bolão. Use <strong>Entrar com código</strong>.</div>';
+  return '<div class="empty">Você ainda não participa de um bolão. Você pode <strong>criar um novo bolão</strong> ou entrar em um existente com código.</div>';
 }
 
 function renderHome() {
@@ -1423,6 +1430,13 @@ async function joinPool() {
   localStorage.setItem('bdg_selected_pool',data);
   await loadCurrentPoolData();
   renderAll();
+
+  try {
+    const url=new URL(window.location.href);
+    url.searchParams.delete('invite');
+    window.history.replaceState({},'',url.pathname + (url.search ? url.search : '') + url.hash);
+  } catch {}
+
   toast('Você entrou no bolão.');
 }
 
@@ -1464,25 +1478,33 @@ async function inviteFriends() {
   const {data,error}=await db.rpc('get_pool_invite',{p_pool_id:p.id});
   if(error) return toast(friendlyError(error),true);
 
-  const site='https://saviola968-cmyk.github.io/BOLAO-DA-GALERA/';
-  const message=`⚽ Bolão Da Galera\n\nEntre no bolão "${data.name}"!\nCódigo: ${data.invite_code}\n\nAcesse: ${site}\nCrie sua conta e use o código para entrar.`;
+  const base='https://saviola968-cmyk.github.io/BOLAO-DA-GALERA/';
+  const inviteUrl=`${base}?invite=${encodeURIComponent(data.invite_code)}`;
+  const message=`⚽ Bolão Da Galera
+
+Entre no bolão "${data.name}"!
+Código: ${data.invite_code}
+
+${inviteUrl}`;
 
   try {
     if(navigator.share) {
-      await navigator.share({title:'Bolão Da Galera',text:message});
-    } else {
-      await navigator.clipboard.writeText(message);
-      toast('Convite copiado! Agora é só enviar para seus amigos.');
+      await navigator.share({
+        title:`Bolão Da Galera - ${data.name}`,
+        text:`Entre no bolão "${data.name}" usando o código ${data.invite_code}`,
+        url:inviteUrl
+      });
+      return;
     }
   } catch(e) {
-    if(e?.name!=='AbortError') {
-      try {
-        await navigator.clipboard.writeText(message);
-        toast('Convite copiado!');
-      } catch {
-        prompt('Copie o convite:',message);
-      }
-    }
+    if(e?.name==='AbortError') return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(message);
+    toast('Link do convite copiado! Agora envie para seus amigos.');
+  } catch {
+    prompt('Copie e envie este convite:',message);
   }
 }
 
@@ -1544,6 +1566,32 @@ function renderAll() {
   renderAdmin();
 }
 
+function getInviteCodeFromUrl() {
+  try {
+    const params=new URLSearchParams(window.location.search);
+    const code=(params.get('invite')||'').trim().toUpperCase();
+    return code.length>=4 ? code : '';
+  } catch {
+    return '';
+  }
+}
+
+function applyInviteFromUrl() {
+  const code=getInviteCodeFromUrl();
+  if(!code) return;
+
+  const input=document.getElementById('joinCode');
+  if(input) input.value=code;
+
+  const box=document.getElementById('inviteDetectedBox');
+  if(box) box.classList.remove('hidden');
+
+  // Se já estiver autenticado, abre direto a tela para confirmar entrada.
+  if(appState.user) {
+    document.getElementById('joinModal').classList.remove('hidden');
+  }
+}
+
 async function boot() {
   const {data,error}=await db.auth.getSession();
   if(error) {
@@ -1557,11 +1605,17 @@ async function boot() {
   if(!appState.user) {
     document.getElementById('loginScreen').classList.remove('hidden');
     document.getElementById('app').classList.add('hidden');
+    const code=getInviteCodeFromUrl();
+    if(code) {
+      const input=document.getElementById('joinCode');
+      if(input) input.value=code;
+    }
     return;
   }
 
   await refreshApp();
   showPage('home');
+  setTimeout(applyInviteFromUrl,150);
 }
 
 db.auth.onAuthStateChange((event,session)=>{
@@ -1574,6 +1628,7 @@ db.auth.onAuthStateChange((event,session)=>{
     }
     await refreshApp();
     showPage('home');
+    setTimeout(applyInviteFromUrl,150);
   },0);
 });
 
