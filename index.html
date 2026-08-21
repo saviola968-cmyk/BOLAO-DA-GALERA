@@ -229,6 +229,10 @@
       width:100%;padding:12px 13px;border-radius:12px;border:1px solid var(--border);
       background:#091526;color:white;outline:none;
     }
+    .password-wrap{display:flex;gap:8px;align-items:center}
+    .password-wrap input{flex:1}
+    .password-toggle{white-space:nowrap;padding:11px 12px}
+    .caps-warning{font-size:11px;color:#fbbf24;display:none;margin-top:3px}
     .field input:focus,.field select:focus{border-color:var(--primary)}
     .full{grid-column:1/-1}
     .notice{
@@ -343,7 +347,14 @@
         <p>Entre com sua conta para fazer seus palpites e acompanhar o ranking.</p>
         <div class="stack">
           <div class="field"><label>E-mail</label><input id="loginEmail" type="email" placeholder="voce@email.com"></div>
-          <div class="field"><label>Senha</label><input id="loginPass" type="password" placeholder="••••••"></div>
+          <div class="field">
+            <label>Senha</label>
+            <div class="password-wrap">
+              <input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••" onkeyup="checkCaps(event,'loginCaps')">
+              <button type="button" class="btn btn-ghost password-toggle" onclick="togglePassword('loginPass',this)">Mostrar</button>
+            </div>
+            <div id="loginCaps" class="caps-warning">⚠️ Caps Lock está ativado.</div>
+          </div>
           <button class="btn btn-primary" onclick="login()">Entrar no bolão</button>
           <button class="btn btn-ghost" style="width:100%" onclick="openForgotPassword()">Esqueci minha senha</button>
         </div>
@@ -355,7 +366,21 @@
         <div class="stack">
           <div class="field"><label>Nome</label><input id="regName" placeholder="Seu nome"></div>
           <div class="field"><label>E-mail</label><input id="regEmail" type="email" placeholder="voce@email.com"></div>
-          <div class="field"><label>Senha</label><input id="regPass" type="password" placeholder="Mínimo 8 caracteres"></div>
+          <div class="field">
+            <label>Senha</label>
+            <div class="password-wrap">
+              <input id="regPass" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" onkeyup="checkCaps(event,'regCaps')">
+              <button type="button" class="btn btn-ghost password-toggle" onclick="togglePassword('regPass',this)">Mostrar</button>
+            </div>
+            <div id="regCaps" class="caps-warning">⚠️ Caps Lock está ativado.</div>
+          </div>
+          <div class="field">
+            <label>Confirmar senha</label>
+            <div class="password-wrap">
+              <input id="regPassConfirm" type="password" autocomplete="new-password" placeholder="Digite a mesma senha novamente">
+              <button type="button" class="btn btn-ghost password-toggle" onclick="togglePassword('regPassConfirm',this)">Mostrar</button>
+            </div>
+          </div>
           <button class="btn btn-primary" onclick="register()">Criar conta</button>
         </div>
       </div>
@@ -370,7 +395,7 @@
           <div>Bolão da Galera<small id="currentPoolMini">Meu Bolão</small></div>
         </div>
         <div class="top-actions">
-          <span class="chip" id="dbChip">🟢 Supabase • V12.4</span>
+          <span class="chip" id="dbChip">🟢 Supabase • V12.5</span>
           <select class="chip" id="poolSelect" onchange="selectPool(this.value)" style="display:none"></select>
           <span class="chip" id="capacityChip">0/30 participantes</span>
           <span class="chip" id="userChip">Usuário</span>
@@ -849,7 +874,7 @@ function toast(msg, danger=false) {
 function friendlyError(error) {
   const raw=String(error?.message||error||'Erro inesperado.');
   const low=raw.toLowerCase();
-  if(low.includes('invalid login credentials')) return 'E-mail ou senha inválidos.';
+  if(low.includes('invalid login credentials')) return 'E-mail ou senha não conferem. Use “Mostrar” para revisar a senha ou “Esqueci minha senha” se necessário.';
   if(low.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.';
   if(low.includes('user already registered')) return 'Este e-mail já está cadastrado.';
   if(low.includes('password')) return 'Confira a senha. Use pelo menos 8 caracteres.';
@@ -917,6 +942,20 @@ function matchState(m) {
   return {closed:false,label:'Aberto',cls:'green'};
 }
 
+function togglePassword(inputId,btn) {
+  const input=document.getElementById(inputId);
+  if(!input) return;
+  const show=input.type==='password';
+  input.type=show?'text':'password';
+  if(btn) btn.textContent=show?'Ocultar':'Mostrar';
+}
+
+function checkCaps(event,warningId) {
+  const warning=document.getElementById(warningId);
+  if(!warning || !event?.getModifierState) return;
+  warning.style.display=event.getModifierState('CapsLock')?'block':'none';
+}
+
 function switchAuth(mode) {
   const login=mode==='login';
   document.getElementById('loginPane').classList.toggle('hidden',!login);
@@ -974,10 +1013,12 @@ async function register() {
   const name=document.getElementById('regName').value.trim();
   const email=document.getElementById('regEmail').value.trim().toLowerCase();
   const password=document.getElementById('regPass').value;
+  const confirm=document.getElementById('regPassConfirm').value;
 
   if(name.length<2) return toast('Informe seu nome.',true);
   if(!email.includes('@')) return toast('Informe um e-mail válido.',true);
   if(password.length<8) return toast('Use uma senha com pelo menos 8 caracteres.',true);
+  if(password!==confirm) return toast('As duas senhas precisam ser iguais.',true);
 
   const {data,error}=await db.auth.signUp({
     email,
@@ -988,6 +1029,7 @@ async function register() {
   if(error) return toast(friendlyError(error),true);
 
   document.getElementById('regPass').value='';
+  document.getElementById('regPassConfirm').value='';
   if(data.session) {
     toast('Conta criada e autenticada.');
   } else {
