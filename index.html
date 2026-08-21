@@ -647,7 +647,7 @@
           </div>
         </section>
 
-        <div class="footer-note">Brasileirão 2026: 38 rodadas / 380 confrontos • referência de confrontos: 365Scores.<br>Datas e horários ainda não detalhados podem sofrer alteração oficial • regras 10/7/5/2/0 • fechamento, pontuação, ranking e premiação automáticos • dados compartilhados e protegidos pelo Supabase</div>
+        <div class="footer-note">Brasileirão 2026: 38 rodadas / 380 confrontos • referência de confrontos: 365Scores.<br>Datas e horários ainda não detalhados podem sofrer alteração oficial • regras 10/7/5/2/0 • fechamento, pontuação, ranking e premiação automáticos • admin validado por UUID no servidor • dados protegidos pelo Supabase</div>
       </main>
     </div>
 
@@ -709,6 +709,7 @@ const appState = {
   session: null,
   user: null,
   profile: null,
+  adminAccess: false,
   pools: [],
   currentPoolId: null,
   matches: [],
@@ -750,7 +751,7 @@ function friendlyError(error) {
 }
 
 function isAdmin() {
-  return appState.profile?.role === 'admin';
+  return appState.adminAccess === true;
 }
 
 function currentPool() {
@@ -862,6 +863,7 @@ function clearAppData() {
   appState.session=null;
   appState.user=null;
   appState.profile=null;
+  appState.adminAccess=false;
   appState.pools=[];
   appState.currentPoolId=null;
   appState.matches=[];
@@ -873,13 +875,20 @@ function clearAppData() {
 }
 
 async function loadProfile() {
-  const {data,error}=await db
-    .from('profiles')
-    .select('id,display_name,role')
-    .eq('id',appState.user.id)
-    .single();
-  if(error) throw error;
-  appState.profile=data;
+  const [profileRes, accessRes] = await Promise.all([
+    db
+      .from('profiles')
+      .select('id,display_name')
+      .eq('id',appState.user.id)
+      .single(),
+    db.rpc('get_my_access')
+  ]);
+
+  if(profileRes.error) throw profileRes.error;
+  if(accessRes.error) throw accessRes.error;
+
+  appState.profile = profileRes.data;
+  appState.adminAccess = accessRes.data?.is_admin === true;
 }
 
 async function loadPools() {
@@ -935,11 +944,11 @@ async function loadCurrentPoolData() {
   if(ids.length) {
     const {data:profiles,error}=await db
       .from('profiles')
-      .select('id,display_name,role')
+      .select('id,display_name')
       .in('id',ids);
     if(error) throw error;
     const byId=Object.fromEntries((profiles||[]).map(p=>[p.id,p]));
-    appState.participants=ids.map(id=>byId[id]||{id,display_name:'Participante',role:'user'});
+    appState.participants=ids.map(id=>byId[id]||{id,display_name:'Participante'});
   }
 }
 
@@ -1030,7 +1039,7 @@ function renderHeader() {
   document.getElementById('currentPoolMini').textContent=p?.name || 'Nenhum bolão';
   document.getElementById('heroTitle').textContent=p?.name || 'Bolão Da Galera';
   document.getElementById('capacityChip').textContent=p?`${appState.participants.length}/30 participantes`:'Sem bolão';
-  document.getElementById('userChip').textContent=name;
+  document.getElementById('userChip').textContent=isAdmin() ? `${name} • Admin` : name;
   document.getElementById('participantCount').textContent=p?appState.participants.length:0;
 
   const open=leagueMatches().filter(m=>!matchState(m).closed).length;
@@ -1240,7 +1249,7 @@ function renderAdmin() {
     : 'Nenhum bolão criado.';
 
   document.getElementById('participantsBox').innerHTML=appState.participants.map(u=>`
-    <span class="person-chip">${esc(u.display_name||'Participante')}${u.role==='admin'?' 👑':''}</span>
+    <span class="person-chip">${esc(u.display_name||'Participante')}</span>
   `).join('') || '<span class="person-chip">Sem participantes</span>';
 
   const imp=document.getElementById('importFixturesBtn');
