@@ -395,7 +395,7 @@
           <div>Bolão da Galera<small id="currentPoolMini">Meu Bolão</small></div>
         </div>
         <div class="top-actions">
-          <span class="chip" id="dbChip">🟢 Supabase • V12.6</span>
+          <span class="chip" id="dbChip">🟢 Supabase • V12.7</span>
           <select class="chip" id="poolSelect" onchange="selectPool(this.value)" style="display:none"></select>
           <span class="chip" id="capacityChip">0/30 participantes</span>
           <span class="chip" id="userChip">Usuário</span>
@@ -453,7 +453,9 @@
               <button class="btn btn-secondary" onclick="openJoinModal()">Entrar com código</button>
               <button class="btn btn-secondary" id="inviteFriendsBtn" style="display:none" onclick="inviteFriends()">📨 Convidar amigos</button>
               <button class="btn btn-secondary" id="createPoolBtn" onclick="openPoolModal()">Criar bolão</button>
+              <button class="btn btn-danger" id="deletePoolHomeBtn" style="display:none" onclick="deleteCurrentPool()">🗑️ Excluir bolão</button>
             </div>
+            <div id="deletePoolHomeHelp" style="display:none;margin-top:10px;color:#fca5a5;font-size:12px"></div>
           </div>
 
           <div class="automation-strip">
@@ -1248,6 +1250,28 @@ function renderHeader() {
   document.getElementById('createPoolBtn').style.display='inline-flex';
   const inviteBtn=document.getElementById('inviteFriendsBtn');
   if(inviteBtn) inviteBtn.style.display=p?'inline-flex':'none';
+
+  const delHome=document.getElementById('deletePoolHomeBtn');
+  if(delHome) {
+    const owner=!!(p && appState.isPoolOwner && !isAdmin());
+    const blocked=appState.participants.length>1;
+
+    delHome.style.display=owner?'inline-flex':'none';
+    delHome.disabled=blocked;
+    delHome.style.opacity=blocked?'.55':'1';
+    delHome.title=blocked
+      ? `Exclusão bloqueada: ${appState.participants.length} participantes no bolão`
+      : 'Excluir este bolão';
+
+    const help=document.getElementById('deletePoolHomeHelp');
+    if(help) {
+      help.style.display=(owner && blocked)?'block':'none';
+      help.textContent=blocked
+        ? `🔒 Este bolão já possui ${appState.participants.length} participantes e não pode mais ser excluído.`
+        : '';
+    }
+  }
+
   renderPoolSelect();
 }
 
