@@ -410,6 +410,7 @@
               <button class="btn btn-primary" onclick="showPage('palpites')">Fazer palpites</button>
               <button class="btn btn-secondary" onclick="showPage('tabela')">Ver 38 rodadas</button>
               <button class="btn btn-secondary" onclick="openJoinModal()">Entrar com código</button>
+              <button class="btn btn-secondary" id="inviteFriendsBtn" style="display:none" onclick="inviteFriends()">📨 Convidar amigos</button>
               <button class="btn btn-secondary" id="createPoolBtn" style="display:none" onclick="openPoolModal()">Criar bolão</button>
             </div>
           </div>
@@ -592,6 +593,18 @@
             </div>
           </div>
 
+          <div class="card rules-section" id="ownerPrizeCard" style="display:none">
+            <h3>🎁 Configuração do criador</h3>
+            <p style="color:var(--muted);line-height:1.6">Você criou este bolão. Pode ajustar apenas a divisão da premiação; jogos, horários, resultados, pontuação e ranking são controlados pelo sistema.</p>
+            <div class="form-grid">
+              <div class="field"><label>🥇 1º lugar (%)</label><input id="ownerPrize1" type="number" min="0" max="100"></div>
+              <div class="field"><label>🥈 2º lugar (%)</label><input id="ownerPrize2" type="number" min="0" max="100"></div>
+              <div class="field"><label>🥉 3º lugar (%)</label><input id="ownerPrize3" type="number" min="0" max="100"></div>
+              <button class="btn btn-secondary full" onclick="saveOwnerPrizes()">Salvar divisão da premiação</button>
+              <button class="btn btn-primary full" onclick="inviteFriends()">📨 Convidar amigos</button>
+            </div>
+          </div>
+
           <div class="card rules-section">
             <h3>🔒 Segurança dos palpites</h3>
             <ul class="rules-list">
@@ -633,7 +646,7 @@
                 <div class="field"><label>Valor por participante (R$)</label><input id="entryFee" type="number" min="0" step="0.01"></div>
                 <div class="field"><label>Limite de pessoas</label><input value="30" disabled></div>
                 <button class="btn btn-secondary full" onclick="saveSettings()">Salvar configurações</button>
-                <button class="btn btn-primary full" id="importFixturesBtn" onclick="importDefaultFixtures()">Importar calendário 2026</button>
+                <button class="btn btn-primary full" id="importFixturesBtn" onclick="importDefaultFixtures()">Recarregar calendário (suporte)</button>
               </div>
             </div>
           </div>
@@ -675,7 +688,12 @@
       <div class="stack">
         <div class="field"><label>Nome do bolão</label><input id="createPoolName" placeholder="Ex.: Copa da Firma"></div>
         <div class="field"><label>Código de convite</label><input id="createPoolCode" placeholder="Ex.: FIRMA2026"></div>
-        <div class="notice">O limite é fixado em <strong>30 participantes</strong>. O criador vira administrador do bolão.</div>
+        <div class="form-grid">
+          <div class="field"><label>🥇 1º lugar (%)</label><input id="createPrize1" type="number" min="0" max="100" value="60"></div>
+          <div class="field"><label>🥈 2º lugar (%)</label><input id="createPrize2" type="number" min="0" max="100" value="30"></div>
+          <div class="field"><label>🥉 3º lugar (%)</label><input id="createPrize3" type="number" min="0" max="100" value="10"></div>
+        </div>
+        <div class="notice">Máximo de <strong>30 participantes</strong>. Quem cria o bolão continua sendo jogador normal; o sistema cuida de jogos, pontuação, ranking e fechamento.</div>
         <button class="btn btn-primary" onclick="createPool()">Criar bolão</button>
       </div>
     </div>
@@ -710,6 +728,7 @@ const appState = {
   user: null,
   profile: null,
   adminAccess: false,
+  isPoolOwner: false,
   pools: [],
   currentPoolId: null,
   matches: [],
@@ -864,6 +883,7 @@ function clearAppData() {
   appState.user=null;
   appState.profile=null;
   appState.adminAccess=false;
+  appState.isPoolOwner=false;
   appState.pools=[];
   appState.currentPoolId=null;
   appState.matches=[];
@@ -894,7 +914,7 @@ async function loadProfile() {
 async function loadPools() {
   const {data,error}=await db
     .from('pools')
-    .select('id,name,invite_code,max_participants,entry_fee,created_by,created_at')
+    .select('id,name,invite_code,max_participants,entry_fee,created_by,created_at,prize_pct_1,prize_pct_2,prize_pct_3')
     .order('created_at',{ascending:true});
   if(error) throw error;
 
@@ -905,6 +925,8 @@ async function loadPools() {
   } else {
     appState.currentPoolId=appState.pools[0]?.id || null;
   }
+  const cp=currentPool();
+  appState.isPoolOwner=!!(cp && cp.created_by===appState.user?.id);
 }
 
 async function loadCurrentPoolData() {
@@ -1011,6 +1033,7 @@ function selectLeague(league) {
 async function selectPool(poolId) {
   if(!appState.pools.some(p=>p.id===poolId)) return;
   appState.currentPoolId=poolId;
+  appState.isPoolOwner=currentPool()?.created_by===appState.user?.id;
   localStorage.setItem('bdg_selected_pool',poolId);
   try {
     await loadCurrentPoolData();
@@ -1053,7 +1076,9 @@ function renderHeader() {
   const admin=isAdmin();
   document.getElementById('adminNav').style.display=admin?'flex':'none';
   document.getElementById('adminNavMobile').style.display=admin?'block':'none';
-  document.getElementById('createPoolBtn').style.display=admin?'inline-flex':'none';
+  document.getElementById('createPoolBtn').style.display='inline-flex';
+  const inviteBtn=document.getElementById('inviteFriendsBtn');
+  if(inviteBtn) inviteBtn.style.display=p?'inline-flex':'none';
   renderPoolSelect();
 }
 
@@ -1198,17 +1223,55 @@ function renderRanking() {
 
 function renderRules() {
   const p=currentPool();
+  const pct1=Number(p?.prize_pct_1 ?? 60);
+  const pct2=Number(p?.prize_pct_2 ?? 30);
+  const pct3=Number(p?.prize_pct_3 ?? 10);
   const total=(Number(p?.entry_fee)||0)*appState.participants.length;
   const money=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+
   set('ruleExact','10');
   set('ruleWinnerOneGoal','7');
   set('ruleWinner','5');
   set('ruleOneGoal','2');
   set('prizePool',money(total));
-  set('prize1',money(total*.60));
-  set('prize2',money(total*.30));
-  set('prize3',money(total*.10));
+  set('prize1',`${pct1}% • ${money(total*(pct1/100))}`);
+  set('prize2',`${pct2}% • ${money(total*(pct2/100))}`);
+  set('prize3',`${pct3}% • ${money(total*(pct3/100))}`);
+
+  const card=document.getElementById('ownerPrizeCard');
+  if(card) card.style.display=appState.isPoolOwner && !isAdmin() ? 'block' : 'none';
+  const o1=document.getElementById('ownerPrize1');
+  const o2=document.getElementById('ownerPrize2');
+  const o3=document.getElementById('ownerPrize3');
+  if(o1) o1.value=pct1;
+  if(o2) o2.value=pct2;
+  if(o3) o3.value=pct3;
+}
+
+async function saveOwnerPrizes() {
+  const p=currentPool();
+  if(!p) return toast('Nenhum bolão selecionado.',true);
+
+  const p1=parseFloat(document.getElementById('ownerPrize1').value||'0');
+  const p2=parseFloat(document.getElementById('ownerPrize2').value||'0');
+  const p3=parseFloat(document.getElementById('ownerPrize3').value||'0');
+  if([p1,p2,p3].some(Number.isNaN) || Math.abs((p1+p2+p3)-100)>0.001) {
+    return toast('A premiação precisa somar 100%.',true);
+  }
+
+  const {error}=await db.rpc('update_my_pool_prizes',{
+    p_pool_id:p.id,
+    p_prize_pct_1:p1,
+    p_prize_pct_2:p2,
+    p_prize_pct_3:p3
+  });
+  if(error) return toast(friendlyError(error),true);
+
+  await loadPools();
+  appState.isPoolOwner=currentPool()?.created_by===appState.user?.id;
+  renderAll();
+  toast('Divisão da premiação atualizada.');
 }
 
 function adminMatchCard(m) {
@@ -1255,7 +1318,7 @@ function renderAdmin() {
   const imp=document.getElementById('importFixturesBtn');
   if(imp) {
     imp.disabled=!p || appState.matches.length>0;
-    imp.textContent=appState.matches.length>0?'Calendário já carregado':'Importar calendário 2026';
+    imp.textContent=appState.matches.length>0?'Calendário carregado':'Recarregar calendário (suporte)';
   }
 }
 
@@ -1340,7 +1403,6 @@ function openJoinModal() {
 }
 
 function openPoolModal() {
-  if(!isAdmin()) return toast('Somente o administrador pode criar bolões.',true);
   document.getElementById('poolModal').classList.remove('hidden');
 }
 
@@ -1365,27 +1427,63 @@ async function joinPool() {
 }
 
 async function createPool() {
-  if(!isAdmin()) return toast('Somente o administrador pode criar bolões.',true);
   const name=document.getElementById('createPoolName').value.trim();
   const code=document.getElementById('createPoolCode').value.trim().toUpperCase();
+  const p1=parseFloat(document.getElementById('createPrize1').value||'0');
+  const p2=parseFloat(document.getElementById('createPrize2').value||'0');
+  const p3=parseFloat(document.getElementById('createPrize3').value||'0');
+
   if(name.length<3 || code.length<4) return toast('Informe nome e código de convite.',true);
+  if([p1,p2,p3].some(Number.isNaN) || Math.abs((p1+p2+p3)-100)>0.001) {
+    return toast('A premiação precisa somar 100%.',true);
+  }
 
   const {data,error}=await db.rpc('create_pool_secure',{
     p_name:name,
     p_invite_code:code,
-    p_entry_fee:0
+    p_prize_pct_1:p1,
+    p_prize_pct_2:p2,
+    p_prize_pct_3:p3
   });
   if(error) return toast(friendlyError(error),true);
 
   closeModal('poolModal');
   await loadPools();
   appState.currentPoolId=data;
+  appState.isPoolOwner=currentPool()?.created_by===appState.user?.id;
   localStorage.setItem('bdg_selected_pool',data);
   await loadCurrentPoolData();
   renderAll();
+  toast('Bolão criado! Os jogos foram carregados automaticamente.');
+}
 
-  toast('Bolão criado. Importando os confrontos...');
-  await importDefaultFixtures();
+async function inviteFriends() {
+  const p=currentPool();
+  if(!p) return toast('Entre ou crie um bolão primeiro.',true);
+
+  const {data,error}=await db.rpc('get_pool_invite',{p_pool_id:p.id});
+  if(error) return toast(friendlyError(error),true);
+
+  const site='https://saviola968-cmyk.github.io/BOLAO-DA-GALERA/';
+  const message=`⚽ Bolão Da Galera\n\nEntre no bolão "${data.name}"!\nCódigo: ${data.invite_code}\n\nAcesse: ${site}\nCrie sua conta e use o código para entrar.`;
+
+  try {
+    if(navigator.share) {
+      await navigator.share({title:'Bolão Da Galera',text:message});
+    } else {
+      await navigator.clipboard.writeText(message);
+      toast('Convite copiado! Agora é só enviar para seus amigos.');
+    }
+  } catch(e) {
+    if(e?.name!=='AbortError') {
+      try {
+        await navigator.clipboard.writeText(message);
+        toast('Convite copiado!');
+      } catch {
+        prompt('Copie o convite:',message);
+      }
+    }
+  }
 }
 
 function fixtureKickoff(f) {
