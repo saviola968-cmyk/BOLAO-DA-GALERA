@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Bolão da Galera</title>
+  <style>
+    :root{
+      --bg:#07111f;
+      --card:#0e1b2d;
+      --card2:#12243b;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --primary:#22c55e;
+      --primary2:#16a34a;
+      --accent:#fbbf24;
+      --danger:#ef4444;
+      --border:#203552;
+      --shadow:0 18px 55px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(34,197,94,.16), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(251,191,36,.10), transparent 28%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .hidden{display:none!important}
+    .app{min-height:100vh}
+    .topbar{
+      position:sticky;top:0;z-index:30;
+      backdrop-filter:blur(18px);
+      background:rgba(7,17,31,.82);
+      border-bottom:1px solid rgba(148,163,184,.12);
+    }
+    .topbar-inner{
+      max-width:1260px;margin:auto;padding:14px 20px;
+      display:flex;align-items:center;justify-content:space-between;gap:18px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.2px}
+    .brand-badge{
+      width:42px;height:42px;border-radius:14px;
+      display:grid;place-items:center;font-size:22px;
+      background:linear-gradient(135deg,var(--primary),#86efac);
+      color:#052e16;box-shadow:0 10px 30px rgba(34,197,94,.28);
+    }
+    .brand small{display:block;color:var(--muted);font-weight:600;font-size:11px;margin-top:2px}
+    .top-actions{display:flex;gap:10px;align-items:center}
+    .chip{
+      border:1px solid var(--border);background:rgba(14,27,45,.75);
+      color:var(--muted);padding:8px 11px;border-radius:999px;font-size:13px;
+    }
+    .btn{
+      border:none;border-radius:12px;padding:11px 15px;font-weight:800;
+      transition:.18s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:white}
+    .btn-secondary{background:#14243a;color:white;border:1px solid var(--border)}
+    .btn-danger{background:#3b161a;color:#fecaca;border:1px solid #7f1d1d}
+    .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+    .layout{
+      max-width:1260px;margin:0 auto;padding:22px 20px 50px;
+      display:grid;grid-template-columns:245px 1fr;gap:22px;
+    }
+    .sidebar{
+      align-self:start;position:sticky;top:86px;
+      background:rgba(14,27,45,.86);border:1px solid var(--border);
+      border-radius:20px;padding:14px;box-shadow:var(--shadow);
+    }
+    .nav-title{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:1.2px;padding:9px 10px}
+    .nav-btn{
+      width:100%;border:none;background:transparent;color:#cbd5e1;text-align:left;
+      padding:12px 12px;border-radius:12px;font-weight:700;margin:2px 0;
+      display:flex;align-items:center;gap:10px;
+    }
+    .nav-btn:hover,.nav-btn.active{background:#172a43;color:white}
+    .nav-btn.active{box-shadow:inset 3px 0 0 var(--primary)}
+    .sidebar-foot{
+      margin-top:12px;padding:12px;border-radius:14px;background:#0a1626;
+      border:1px solid rgba(148,163,184,.12);font-size:12px;color:var(--muted);line-height:1.5;
+    }
+    .content{min-width:0}
+    .hero{
+      background:
+        linear-gradient(135deg, rgba(34,197,94,.18), rgba(251,191,36,.08)),
+        var(--card);
+      border:1px solid var(--border);border-radius:24px;padding:28px;
+      box-shadow:var(--shadow);overflow:hidden;position:relative;
+    }
+    .hero:after{
+      content:"⚽";position:absolute;right:28px;top:12px;font-size:100px;opacity:.07;transform:rotate(-12deg)
+    }
+    .eyebrow{font-size:12px;color:#86efac;font-weight:900;text-transform:uppercase;letter-spacing:1.2px}
+    h1,h2,h3,p{margin-top:0}
+    .hero h1{font-size:34px;margin:8px 0 10px}
+    .hero p{color:#cbd5e1;max-width:700px;line-height:1.65}
+    .hero-slogan{
+      margin-top:10px;
+      font-size:18px;
+      line-height:1.55;
+      color:#f8fafc;
+      font-weight:800;
+      max-width:820px;
+    }
+    .hero-slogan span{color:#86efac}
+    .automation-strip{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-top:16px;
+    }
+    .auto-card{
+      background:rgba(10,23,39,.86);
+      border:1px solid var(--border);
+      border-radius:15px;
+      padding:14px;
+    }
+    .auto-card strong{display:block;margin-bottom:4px}
+    .auto-card small{color:var(--muted);line-height:1.45}
+    .auto-status{
+      display:inline-flex;align-items:center;gap:6px;
+      margin-top:8px;padding:5px 8px;border-radius:999px;
+      font-size:11px;font-weight:900;
+      background:#0f2c1c;color:#86efac;border:1px solid #14532d;
+    }
+    @media(max-width:800px){.automation-strip{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:520px){.automation-strip{grid-template-columns:1fr}}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .league-switcher{
+      margin-bottom:18px;background:rgba(14,27,45,.92);border:1px solid var(--border);
+      border-radius:18px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+      box-shadow:0 12px 30px rgba(0,0,0,.14);flex-wrap:wrap
+    }
+    .league-switcher .league-copy strong{display:block;font-size:14px}
+    .league-switcher .league-copy span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+    .league-tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .league-btn{
+      border:1px solid var(--border);background:#0a1626;color:#cbd5e1;padding:10px 13px;border-radius:12px;
+      font-weight:850;display:flex;align-items:center;gap:8px
+    }
+    .league-btn:hover{border-color:#3c5575}
+    .league-btn.active{background:linear-gradient(135deg,#17394d,#123625);border-color:#22c55e;color:white;box-shadow:0 8px 22px rgba(34,197,94,.12)}
+    .round-picker{display:flex;align-items:center;gap:8px;margin-left:auto}
+    .round-picker label{font-size:12px;color:var(--muted);font-weight:800}
+    .round-picker select{background:#091526;color:white;border:1px solid var(--border);border-radius:11px;padding:10px 34px 10px 11px;font-weight:800;outline:none}
+    .round-picker select:focus{border-color:var(--primary)}
+    .league-tag{font-size:11px;font-weight:900;padding:5px 8px;border-radius:999px;background:#172a43;color:#cbd5e1;border:1px solid var(--border)}
+    .grid{display:grid;gap:16px}
+    .stats{grid-template-columns:repeat(4,1fr);margin-top:18px}
+    .card{
+      background:rgba(14,27,45,.92);border:1px solid var(--border);
+      border-radius:18px;padding:18px;box-shadow:0 12px 30px rgba(0,0,0,.15);
+    }
+    .stat-label{font-size:12px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.8px}
+    .stat-value{font-size:28px;font-weight:900;margin-top:8px}
+    .stat-sub{color:var(--muted);font-size:12px;margin-top:5px}
+    .section-head{
+      display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin:26px 0 12px
+    }
+    .section-head h2{margin:0;font-size:21px}
+    .section-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .match-list{display:grid;gap:12px}
+    .match{
+      display:grid;grid-template-columns:1fr auto 1fr auto;gap:14px;align-items:center;
+      background:rgba(14,27,45,.92);border:1px solid var(--border);
+      border-radius:18px;padding:16px;
+    }
+    .team{font-weight:800}
+    .team.right{text-align:right}
+    .match-meta{grid-column:1/-1;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:10px}
+    .score-inputs{display:flex;align-items:center;gap:6px}
+    .score-inputs input{
+      width:48px;height:44px;text-align:center;border-radius:11px;border:1px solid var(--border);
+      background:#091526;color:white;font-weight:900;font-size:18px;outline:none;
+    }
+    .score-inputs input:focus{border-color:var(--primary)}
+    .pill{font-size:11px;font-weight:900;padding:6px 9px;border-radius:999px;background:#13243a;color:#cbd5e1;border:1px solid var(--border)}
+    .pill.green{background:#0f2c1c;color:#86efac;border-color:#14532d}
+    .pill.gold{background:#332a11;color:#fde68a;border-color:#713f12}
+    .table-wrap{overflow:auto;border-radius:16px;border:1px solid var(--border)}
+    table{width:100%;border-collapse:collapse;min-width:650px;background:rgba(14,27,45,.88)}
+    th,td{padding:14px 15px;text-align:left;border-bottom:1px solid rgba(148,163,184,.1)}
+    th{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);background:#0b1727}
+    td{font-size:14px}
+    tr:last-child td{border-bottom:none}
+    .rank{font-weight:900;width:50px}
+    .avatar{
+      width:34px;height:34px;border-radius:50%;display:inline-grid;place-items:center;
+      background:#1d3552;margin-right:9px;font-weight:900;color:#bbf7d0;
+    }
+    .progress{height:8px;background:#091421;border-radius:999px;overflow:hidden;border:1px solid rgba(148,163,184,.12)}
+    .progress > div{height:100%;background:linear-gradient(90deg,var(--primary),#86efac)}
+    .rules-grid{grid-template-columns:repeat(3,1fr)}
+    .rule-card .icon{font-size:30px;margin-bottom:12px}
+    .rule-card h3{margin-bottom:6px}
+    .rule-card p{color:var(--muted);font-size:13px;line-height:1.55;margin:0}
+    .rules-section{margin-top:16px}
+    .rules-section h3{margin-bottom:12px}
+    .rules-list{margin:0;padding-left:20px;color:#cbd5e1;line-height:1.8;font-size:14px}
+    .rules-list li{margin:5px 0}
+    .score-board{display:grid;gap:10px}
+    .score-line{display:grid;grid-template-columns:90px 1fr;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--border);border-radius:13px;background:#0a1727}
+    .score-value{font-size:20px;font-weight:900;text-align:center}
+    .score-10 .score-value{color:#86efac}.score-7 .score-value{color:#93c5fd}.score-5 .score-value{color:#fbbf24}.score-2 .score-value{color:#d8b4fe}.score-0 .score-value{color:#fca5a5}
+    .example-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .example-card{background:#0a1727;border:1px solid var(--border);border-radius:14px;padding:14px}
+    .example-card strong{display:block;margin-bottom:7px}
+    .example-card p{margin:0;color:var(--muted);line-height:1.6;font-size:13px}
+    .prize-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .prize-card{text-align:center;background:#0a1727;border:1px solid var(--border);border-radius:15px;padding:18px}
+    .prize-card .place{font-size:13px;color:var(--muted);font-weight:800}.prize-card .pct{font-size:30px;font-weight:900;margin:5px 0}.prize-card .money{color:#86efac;font-weight:800}
+    .rule-note{padding:13px 15px;border-radius:13px;background:#2a2410;border:1px solid #713f12;color:#fde68a;font-size:13px;line-height:1.6}
+    @media(max-width:700px){.example-grid,.prize-grid{grid-template-columns:1fr}.score-line{grid-template-columns:74px 1fr}}
+    .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .field{display:flex;flex-direction:column;gap:7px}
+    .field label{font-size:12px;color:#cbd5e1;font-weight:800}
+    .field input,.field select{
+      width:100%;padding:12px 13px;border-radius:12px;border:1px solid var(--border);
+      background:#091526;color:white;outline:none;
+    }
+    .password-wrap{display:flex;gap:8px;align-items:center}
+    .password-wrap input{flex:1}
+    .password-toggle{white-space:nowrap;padding:11px 12px}
+    .caps-warning{font-size:11px;color:#fbbf24;display:none;margin-top:3px}
+    .field input:focus,.field select:focus{border-color:var(--primary)}
+    .full{grid-column:1/-1}
+    .notice{
+      border:1px solid #3b4c64;background:#0c1929;border-radius:14px;padding:12px 14px;color:#cbd5e1;font-size:13px;line-height:1.5
+    }
+    .admin-box{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:16px}
+    .mobile-nav{display:none}
+    .login-screen{
+      min-height:100vh;display:grid;place-items:center;padding:24px;
+      background:
+        radial-gradient(circle at 20% 10%,rgba(34,197,94,.18),transparent 30%),
+        radial-gradient(circle at 80% 0%,rgba(251,191,36,.08),transparent 30%),
+        var(--bg);
+    }
+    .login-card{
+      width:min(470px,100%);background:rgba(14,27,45,.96);border:1px solid var(--border);
+      border-radius:24px;padding:26px;box-shadow:var(--shadow)
+    }
+    .login-card .brand{margin-bottom:22px}
+    .tabs{display:flex;gap:8px;background:#091526;padding:5px;border-radius:13px;margin-bottom:18px}
+    .tab{flex:1;border:none;background:transparent;color:var(--muted);padding:10px;border-radius:10px;font-weight:800}
+    .tab.active{background:#162a44;color:white}
+    .login-card h2{margin-bottom:6px}
+    .login-card > p{color:var(--muted);font-size:13px;line-height:1.5}
+    .stack{display:grid;gap:12px}
+    .divider{text-align:center;color:var(--muted);font-size:12px;margin:5px 0}
+    .demo{font-size:12px;color:var(--muted);background:#091526;border:1px solid var(--border);padding:11px;border-radius:12px;line-height:1.6}
+    .toast{
+      position:fixed;right:20px;bottom:20px;z-index:99;
+      background:#0f2c1c;border:1px solid #166534;color:#dcfce7;
+      padding:13px 16px;border-radius:13px;box-shadow:var(--shadow);
+      opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s;
+    }
+    .toast.show{opacity:1;transform:none}
+    .modal{
+      position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:80;
+      display:grid;place-items:center;padding:20px;
+    }
+    .modal-card{
+      width:min(560px,100%);max-height:90vh;overflow:auto;
+      background:#0f1d30;border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:var(--shadow)
+    }
+    .modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}
+    .invite-link-box{
+      display:flex;gap:8px;align-items:center;
+      background:#091526;border:1px solid var(--border);
+      border-radius:12px;padding:8px;margin-top:10px
+    }
+    .invite-link-box input{
+      flex:1;min-width:0;background:transparent;border:none;color:#dbeafe;
+      outline:none;padding:7px;font-size:13px
+    }
+    .invite-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+    @media(max-width:560px){.invite-actions{grid-template-columns:1fr}}
+    .close{background:transparent;border:none;color:var(--muted);font-size:25px}
+    .participants{display:flex;flex-wrap:wrap;gap:9px}
+    .person-chip{padding:9px 11px;border-radius:999px;background:#13243a;border:1px solid var(--border);font-size:12px}
+    .footer-note{color:var(--muted);font-size:12px;text-align:center;margin-top:28px}
+    .full-schedule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .round-card{background:rgba(14,27,45,.92);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+    .round-card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;background:#0b1727;border-bottom:1px solid var(--border)}
+    .round-card-head strong{font-size:15px}
+    .round-card-head span{font-size:11px;color:var(--muted);text-align:right}
+    .round-games{padding:7px 14px 12px}
+    .round-game{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(148,163,184,.09);font-size:13px}
+    .round-game:last-child{border-bottom:none}
+    .round-game .away{text-align:right}
+    .source-box{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding:13px 15px;border:1px solid #24445d;background:#0b1929;border-radius:14px;color:#cbd5e1;font-size:13px}
+    .source-box a{color:#86efac;font-weight:800;text-decoration:none}
+    @media(max-width:760px){.full-schedule-grid{grid-template-columns:1fr}}
+    @media(max-width:930px){
+      .layout{grid-template-columns:1fr;padding-bottom:92px}
+      .sidebar{display:none}
+      .mobile-nav{
+        display:grid;grid-template-columns:repeat(5,1fr);position:fixed;z-index:50;left:12px;right:12px;bottom:12px;
+        background:rgba(14,27,45,.95);backdrop-filter:blur(14px);border:1px solid var(--border);
+        border-radius:17px;padding:7px;box-shadow:var(--shadow)
+      }
+      .mobile-nav button{border:none;background:transparent;color:var(--muted);padding:9px 3px;border-radius:10px;font-size:11px}
+      .mobile-nav button.active{background:#172a43;color:white}
+      .stats{grid-template-columns:repeat(2,1fr)}
+      .rules-grid{grid-template-columns:1fr}
+      .admin-box{grid-template-columns:1fr}
+    }
+    @media(max-width:640px){
+      .topbar-inner{padding:12px 14px}.chip{display:none}
+      .layout{padding:15px 12px 92px}.hero{padding:20px}.hero h1{font-size:26px}
+      .league-switcher{align-items:stretch}.league-tabs{width:100%}.league-btn{flex:1;justify-content:center}
+      .stats{grid-template-columns:1fr 1fr;gap:10px}.card{padding:15px}
+      .match{grid-template-columns:1fr auto 1fr}
+      .match .btn{grid-column:1/-1}
+      .form-grid{grid-template-columns:1fr}.full{grid-column:auto}
+    }
+  </style>
+</head>
+<body>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="brand">
+        <div class="brand-badge">⚽</div>
+        <div>Bolão da Galera<small>Até 30 participantes</small></div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" id="tabLogin" onclick="switchAuth('login')">Entrar</button>
+        <button class="tab" id="tabRegister" onclick="switchAuth('register')">Criar conta</button>
+      </div>
+
+      <div id="loginPane">
+        <h2>Bem-vindo de volta</h2>
+        <p>Entre com sua conta para fazer seus palpites e acompanhar o ranking.</p>
+        <div class="stack">
+          <div class="field"><label>E-mail</label><input id="loginEmail" type="email" placeholder="voce@email.com"></div>
+          <div class="field">
+            <label>Senha</label>
+            <div class="password-wrap">
+              <input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••" onkeyup="checkCaps(event,'loginCaps')">
+              <button type="button" class="btn btn-ghost password-toggle" onclick="togglePassword('loginPass',this)">Mostrar</button>
+            </div>
+            <div id="loginCaps" class="caps-warning">⚠️ Caps Lock está ativado.</div>
+          </div>
+          <button class="btn btn-primary" onclick="login()">Entrar no bolão</button>
+          <button class="btn btn-ghost" style="width:100%" onclick="openForgotPassword()">Esqueci minha senha</button>
+        </div>
+      </div>
+
+      <div id="registerPane" class="hidden">
+        <h2>Crie sua conta</h2>
+        <p>Seu perfil será usado no ranking dos bolões.</p>
+        <div class="stack">
+          <div class="field"><label>Nome</label><input id="regName" placeholder="Seu nome"></div>
+          <div class="field"><label>E-mail</label><input id="regEmail" type="email" placeholder="voce@email.com"></div>
+          <div class="field">
+            <label>Senha</label>
+            <div class="password-wrap">
+              <input id="regPass" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" onkeyup="checkCaps(event,'regCaps')">
+              <button type="button" class="btn btn-ghost password-toggle" onclick="togglePassword('regPass',this)">Mostrar</button>
+            </div>
+            <div id="regCaps" class="caps-warning">⚠️ Caps Lock está ativado.</div>
+          </div>
+          <div class="field">
+            <label>Confirmar senha</label>
+            <div class="password-wrap">
+              <input id="regPassConfirm" type="password" autocomplete="new-password" placeholder="Digite a mesma senha novamente">
+              <button type="button" class="btn btn-ghost password-toggle" onclick="togglePassword('regPassConfirm',this)">Mostrar</button>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="register()">Criar conta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-badge">⚽</div>
+          <div>Bolão da Galera<small id="currentPoolMini">Meu Bolão</small></div>
+        </div>
+        <div class="top-actions">
+          <span class="chip" id="dbChip">🟢 Supabase • V12.12</span>
+          <select class="chip" id="poolSelect" onchange="selectPool(this.value)" style="display:none"></select>
+          <span class="chip" id="capacityChip">0/30 participantes</span>
+          <span class="chip" id="userChip">Usuário</span>
+          <button class="btn btn-ghost" onclick="logout()">Sair</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="nav-title">Bolão</div>
+        <button class="nav-btn active" data-page="home" onclick="showPage('home')">🏠 Visão geral</button>
+        <button class="nav-btn" data-page="palpites" onclick="showPage('palpites')">🎯 Meus palpites</button>
+        <button class="nav-btn" onclick="openPoolModal()">➕ Criar bolão</button>
+        <button class="nav-btn" data-page="tabela" onclick="showPage('tabela')">📅 Tabela completa</button>
+        <button class="nav-btn" data-page="ranking" onclick="showPage('ranking')">🏆 Ranking</button>
+        <button class="nav-btn" data-page="regras" onclick="showPage('regras')">📋 Regras</button>
+        <button class="nav-btn" data-page="admin" id="adminNav" style="display:none" onclick="showPage('admin')">⚙️ Administração</button>
+        <div class="sidebar-foot">
+          <strong>Limite do grupo:</strong><br>
+          até 30 participantes por bolão.
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="league-switcher">
+          <div class="league-copy">
+            <strong>Escolha a liga</strong>
+            <span>Os confrontos abaixo mudam conforme o campeonato selecionado.</span>
+          </div>
+          <div class="league-tabs">
+            <button class="league-btn active" data-league="brasileirao" onclick="selectLeague('brasileirao')">🇧🇷 Brasileirão Série A</button>
+            <button class="league-btn" data-league="premier" onclick="selectLeague('premier')">🏴 Premier League</button>
+            <button class="league-btn" data-league="laliga" onclick="selectLeague('laliga')">🇪🇸 La Liga</button>
+            <button class="league-btn" data-league="seriea" onclick="selectLeague('seriea')">🇮🇹 Serie A Italiana</button>
+          </div>
+          <div class="round-picker">
+            <label for="roundSelect">Rodada</label>
+            <select id="roundSelect" onchange="selectRound(this.value)"></select>
+          </div>
+        </div>
+
+        <section id="page-home" class="page">
+          <div class="hero">
+            <div class="eyebrow">Bolão de futebol entre amigos</div>
+            <h1 id="heroTitle">Campeonato da Galera</h1>
+            <div class="hero-slogan">
+              Crie bolão para campeonatos de futebol e convide seus amigos.
+              <span>O Bolão Da Galera cuidará de tudo para você.</span>
+            </div>
+            <p style="margin-top:10px">
+              Palpites, fechamento automático, pontuação, ranking e premiação organizados em um só lugar.
+            </p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="showPage('palpites')">Fazer palpites</button>
+              <button class="btn btn-secondary" onclick="showPage('tabela')">Ver 38 rodadas</button>
+              <button class="btn btn-secondary" onclick="openJoinModal()">Entrar com código</button>
+              <button class="btn btn-secondary" id="inviteFriendsBtn" style="display:none" onclick="inviteFriends()">📨 Convidar amigos</button>
+              <button class="btn btn-secondary" id="createPoolBtn" onclick="openPoolModal()">Criar bolão</button>
+              <button class="btn btn-danger" id="deletePoolHomeBtn" style="display:none" onclick="deleteCurrentPool()">🗑️ Excluir bolão</button>
+            </div>
+            <div id="deletePoolHomeHelp" style="display:none;margin-top:10px;color:#fca5a5;font-size:12px"></div>
+          </div>
+
+          <div class="automation-strip">
+            <div class="auto-card">
+              <strong>⏱️ Fechamento automático</strong>
+              <small>O palpite é bloqueado 10 minutos antes do início da partida.</small>
+              <div class="auto-status">● Automático</div>
+            </div>
+            <div class="auto-card">
+              <strong>🧮 Pontuação automática</strong>
+              <small>Ao lançar o resultado oficial, o sistema calcula 10 / 7 / 5 / 2 / 0 pontos.</small>
+              <div class="auto-status">● Automático</div>
+            </div>
+            <div class="auto-card">
+              <strong>🏆 Ranking automático</strong>
+              <small>Classificação e critérios de desempate são recalculados na hora.</small>
+              <div class="auto-status">● Automático</div>
+            </div>
+            <div class="auto-card">
+              <strong>💰 Premiação automática</strong>
+              <small>O sistema calcula 60% / 30% / 10% sobre o valor arrecadado.</small>
+              <div class="auto-status">● Automático</div>
+            </div>
+          </div>
+
+          <div class="grid stats">
+            <div class="card"><div class="stat-label">Minha posição</div><div class="stat-value" id="myPosition">—</div><div class="stat-sub">no ranking atual</div></div>
+            <div class="card"><div class="stat-label">Meus pontos</div><div class="stat-value" id="myPoints">0</div><div class="stat-sub">pontuação acumulada</div></div>
+            <div class="card"><div class="stat-label">Participantes</div><div class="stat-value" id="participantCount">0</div><div class="stat-sub">máximo de 30</div></div>
+            <div class="card"><div class="stat-label">Jogos abertos</div><div class="stat-value" id="openMatches">0</div><div class="stat-sub">abertos na rodada escolhida</div></div>
+          </div>
+
+          <div class="section-head">
+            <div><h2>Confrontos • <span id="homeLeagueTitle">Brasileirão Série A</span> • <span id="homeRoundTitle">Rodada 24</span></h2><p>Escolha a rodada no topo. Quando o horário ainda não foi detalhado, o site sinaliza como “a definir”.</p></div>
+            <button class="btn btn-secondary" onclick="showPage('palpites')">Ver todos</button>
+          </div>
+          <div id="homeMatches" class="match-list"></div>
+        </section>
+
+        <section id="page-palpites" class="page hidden">
+          <div class="section-head">
+            <div><h2>Meus palpites • <span id="predictionLeagueTitle">Brasileirão Série A</span> • <span id="predictionRoundTitle">Rodada 24</span></h2><p>Escolha o placar dos 10 confrontos da rodada selecionada.</p></div>
+            <span class="pill green" id="savedCountPill">0 salvos</span>
+          </div>
+          <div id="predictionMatches" class="match-list"></div>
+        </section>
+
+        <section id="page-tabela" class="page hidden">
+          <div class="section-head">
+            <div>
+              <h2>Tabela completa • <span id="fullScheduleLeagueTitle">Brasileirão Série A</span></h2>
+              <p id="fullScheduleSubtitle">38 rodadas • 380 confrontos carregados.</p>
+            </div>
+          </div>
+          <div class="source-box">
+            <span>📌 Confrontos do Brasileirão 2026 conferidos com a tabela publicada pelo 365Scores.</span>
+            <a href="https://www.365scores.com/pt-br/football/league/brasileirao-serie-a-113" target="_blank" rel="noopener">Abrir 365Scores ↗</a>
+          </div>
+          <div id="fullScheduleGrid" class="full-schedule-grid"></div>
+        </section>
+
+        <section id="page-ranking" class="page hidden">
+          <div class="section-head">
+            <div><h2>Ranking geral</h2><p>Classificação somando os pontos de todos os campeonatos do bolão.</p></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Participante</th><th>Pontos</th><th>10 pts</th><th>7 pts</th><th>5 pts</th><th>2 pts</th><th>Palpites</th></tr></thead>
+              <tbody id="rankingBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="page-regras" class="page hidden">
+          <div class="section-head">
+            <div>
+              <h2>Regulamento, pontuação e premiação</h2>
+              <p>Regras oficiais usadas pelo sistema para calcular o bolão.</p>
+            </div>
+          </div>
+
+          <div class="card rules-section">
+            <h3>👥 Como participar</h3>
+            <ul class="rules-list">
+              <li>O participante deve criar seu cadastro no sistema.</li>
+              <li>Se o grupo tiver valor de participação, o pagamento é combinado diretamente com o organizador.</li>
+              <li>Após o cadastro e, quando aplicável, a confirmação do pagamento, o organizador adiciona o participante ao bolão.</li>
+              <li>Cada bolão aceita no máximo <strong>30 participantes</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="card rules-section">
+            <h3>⚙️ Como funciona</h3>
+            <ul class="rules-list">
+              <li>São considerados todos os jogos definidos para as competições selecionadas no bolão.</li>
+              <li>Cada partida recebe um palpite de placar final feito pelo participante.</li>
+              <li>O palpite pode ser criado ou alterado até <strong>10 minutos antes do início da partida</strong>.</li>
+              <li>Ao chegar ao horário de fechamento, o sistema bloqueia novas alterações.</li>
+              <li>Partida sem palpite vale <strong>0 ponto</strong>.</li>
+              <li>Os palpites dos demais participantes devem permanecer ocultos até o fechamento da partida.</li>
+              <li>Depois do jogo, o administrador informa o placar oficial e o ranking é recalculado automaticamente.</li>
+              <li>Para competições com mata-mata, o resultado considera tempo regulamentar e eventual prorrogação; disputa de pênaltis não entra no placar do bolão.</li>
+              <li>O Ranking Geral reúne a pontuação de todos os participantes.</li>
+            </ul>
+            <div class="rule-note" style="margin-top:12px">
+              📧 Regra de aviso: enviar lembrete 4 horas antes do jogo para quem ainda não palpitou. <strong>Na versão HTML local esse envio por e-mail ainda precisa de integração com um serviço de e-mail/backend.</strong>
+            </div>
+          </div>
+
+          <div class="card rules-section">
+            <h3>🏆 Pontos possíveis</h3>
+            <div class="score-board">
+              <div class="score-line score-10"><div class="score-value"><span id="ruleExact">10</span> pts</div><div><strong>Acertou em cheio.</strong><br>Acertou o vencedor/empate e o placar dos dois times.</div></div>
+              <div class="score-line score-7"><div class="score-value"><span id="ruleWinnerOneGoal">7</span> pts</div><div><strong>Resultado + um lado do placar.</strong><br>Acertou vencedor/empate e também os gols de um dos times.</div></div>
+              <div class="score-line score-5"><div class="score-value"><span id="ruleWinner">5</span> pts</div><div><strong>Resultado correto.</strong><br>Acertou quem venceu ou que houve empate, mas errou os dois lados do placar.</div></div>
+              <div class="score-line score-2"><div class="score-value"><span id="ruleOneGoal">2</span> pts</div><div><strong>Um lado do placar.</strong><br>Acertou os gols de um dos times, mas errou vencedor/empate.</div></div>
+              <div class="score-line score-0"><div class="score-value">0 pts</div><div><strong>Sem acerto.</strong><br>Não palpitou ou não acertou o resultado nem nenhum lado do placar.</div></div>
+            </div>
+          </div>
+
+          <div class="card rules-section">
+            <h3>🧪 Exemplos de pontuação</h3>
+            <div class="example-grid">
+              <div class="example-card">
+                <strong>+10 pontos</strong>
+                <p>Placar oficial: Brasil 3 × 1 Croácia<br>Palpite: 3 × 1<br>Acertou o resultado e os dois placares.</p>
+              </div>
+              <div class="example-card">
+                <strong>+7 pontos</strong>
+                <p>Placar oficial: Brasil 3 × 1 Croácia<br>Palpite: 2 × 1<br>Acertou a vitória do Brasil e os gols da Croácia.</p>
+              </div>
+              <div class="example-card">
+                <strong>+5 pontos</strong>
+                <p>Placar oficial: Brasil 3 × 1 Croácia<br>Palpite: 4 × 0<br>Acertou apenas o vencedor.</p>
+              </div>
+              <div class="example-card">
+                <strong>+2 pontos</strong>
+                <p>Placar oficial: Brasil 3 × 1 Croácia<br>Palpite: 1 × 1<br>Errou o resultado, mas acertou os gols da Croácia.</p>
+              </div>
+              <div class="example-card">
+                <strong>+0 ponto</strong>
+                <p>Placar oficial: Brasil 3 × 1 Croácia<br>Palpite: 0 × 0<br>Não acertou vencedor nem nenhum lado do placar.</p>
+              </div>
+              <div class="example-card">
+                <strong>Empate também conta</strong>
+                <p>Placar oficial: Espanha 2 × 2 Holanda<br>Palpite: 1 × 1<br>Acertou o empate, portanto recebe 5 pontos.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card rules-section">
+            <h3>⚖️ Critério de desempate</h3>
+            <ul class="rules-list">
+              <li>Primeiro: maior pontuação total.</li>
+              <li>Persistindo empate: quem conseguiu mais vezes <strong>10 pontos</strong>.</li>
+              <li>Depois: maior quantidade de jogos com <strong>7 pontos</strong>.</li>
+              <li>Depois: maior quantidade de jogos com <strong>5 pontos</strong>.</li>
+              <li>Por último: maior quantidade de jogos com <strong>2 pontos</strong>.</li>
+              <li>Se ainda permanecer empatado entre premiados, a divisão do prêmio pode ser proporcional entre os empatados, conforme decisão do grupo.</li>
+            </ul>
+          </div>
+
+          <div class="card rules-section">
+            <h3>💰 Premiação</h3>
+            <p style="color:var(--muted);line-height:1.7">
+              Se houver valor de participação, o total arrecadado pelo grupo é distribuído aos três primeiros colocados do Ranking Geral.
+            </p>
+            <div class="prize-grid">
+              <div class="prize-card"><div class="place">🥇 1º colocado</div><div class="pct">60%</div><div class="money" id="prize1">R$ 0,00</div></div>
+              <div class="prize-card"><div class="place">🥈 2º colocado</div><div class="pct">30%</div><div class="money" id="prize2">R$ 0,00</div></div>
+              <div class="prize-card"><div class="place">🥉 3º colocado</div><div class="pct">10%</div><div class="money" id="prize3">R$ 0,00</div></div>
+            </div>
+            <p style="color:var(--muted);margin:14px 0 0;font-size:13px">
+              Total estimado arrecadado: <strong id="prizePool">R$ 0,00</strong>.
+            </p>
+            <div class="rule-note" style="margin-top:12px">
+              O site apenas organiza o bolão e calcula ranking/premiação. A cobrança e o pagamento dos prêmios são responsabilidade do grupo e do organizador.
+            </div>
+          </div>
+
+          <div class="card rules-section" id="ownerPrizeCard" style="display:none">
+            <h3>🎁 Configuração do criador</h3>
+            <p style="color:var(--muted);line-height:1.6">Você criou este bolão. Pode ajustar apenas a divisão da premiação; jogos, horários, resultados, pontuação e ranking são controlados pelo sistema.</p>
+            <div class="form-grid">
+              <div class="field"><label>🥇 1º lugar (%)</label><input id="ownerPrize1" type="number" min="0" max="100"></div>
+              <div class="field"><label>🥈 2º lugar (%)</label><input id="ownerPrize2" type="number" min="0" max="100"></div>
+              <div class="field"><label>🥉 3º lugar (%)</label><input id="ownerPrize3" type="number" min="0" max="100"></div>
+              <button class="btn btn-secondary full" onclick="saveOwnerPrizes()">Salvar divisão da premiação</button>
+              <button class="btn btn-primary full" onclick="inviteFriends()">📨 Convidar amigos</button>
+              <div class="full" style="margin-top:8px;padding-top:12px;border-top:1px solid var(--border)">
+                <button id="deletePoolBtn" class="btn btn-danger" style="width:100%" onclick="deleteCurrentPool()">🗑️ Excluir bolão</button>
+                <div id="deletePoolHelp" style="margin-top:7px;color:var(--muted);font-size:12px;line-height:1.45"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card rules-section">
+            <h3>🔒 Segurança dos palpites</h3>
+            <ul class="rules-list">
+              <li>Depois do encerramento do prazo, o palpite não pode ser alterado.</li>
+              <li>Os palpites dos outros participantes não ficam disponíveis antes do fechamento do jogo.</li>
+              <li>Resultados lançados pelo administrador recalculam os pontos automaticamente.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="page-admin" class="page hidden">
+          <div class="section-head">
+            <div><h2>Administração</h2><p>Cadastre jogos, lance resultados e acompanhe os participantes.</p></div>
+            <span class="pill gold">Acesso do administrador</span>
+          </div>
+
+          <div class="admin-box">
+            <div class="card">
+              <h3>Cadastrar jogo</h3>
+              <div class="form-grid">
+                <div class="field"><label>Liga</label><select id="newLeague"><option value="brasileirao">🇧🇷 Brasileirão Série A</option><option value="premier">🏴 Premier League</option><option value="laliga">🇪🇸 La Liga</option><option value="seriea">🇮🇹 Serie A Italiana</option></select></div>
+                <div class="field"><label>Rodada / descrição</label><input id="newRound" placeholder="Ex.: Rodada 25"></div>
+                <div class="field"><label>Time da casa</label><input id="newHome" placeholder="Ex.: Flamengo"></div>
+                <div class="field"><label>Time visitante</label><input id="newAway" placeholder="Ex.: Palmeiras"></div>
+                <div class="field"><label>Data</label><input id="newDate" type="date"></div>
+                <div class="field"><label>Hora</label><input id="newTime" type="time"></div>
+                <button class="btn btn-primary full" onclick="addMatch()">Adicionar partida</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Configuração do bolão</h3>
+              <div class="form-grid">
+                <div class="field full"><label>Nome do bolão</label><input id="poolNameInput"></div>
+                <div class="field"><label>Placar exato</label><input id="ptsExact" value="10" disabled></div>
+                <div class="field"><label>Resultado + 1 lado</label><input id="ptsWinnerOneGoal" value="7" disabled></div>
+                <div class="field"><label>Somente resultado</label><input id="ptsWinner" value="5" disabled></div>
+                <div class="field"><label>Somente 1 lado</label><input id="ptsOneGoal" value="2" disabled></div>
+                <div class="field"><label>Valor por participante (R$)</label><input id="entryFee" type="number" min="0" step="0.01"></div>
+                <div class="field"><label>Limite de pessoas</label><input value="30" disabled></div>
+                <button class="btn btn-secondary full" onclick="saveSettings()">Salvar configurações</button>
+                <button class="btn btn-primary full" id="importFixturesBtn" onclick="importDefaultFixtures()">Recarregar calendário (suporte)</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-head"><div><h2>Resultados • <span id="adminLeagueTitle">Brasileirão Série A</span> • <span id="adminRoundTitle">Rodada 24</span></h2><p>Informe o placar real para atualizar o ranking automaticamente.</p></div></div>
+          <div id="adminMatches" class="match-list"></div>
+
+          <div class="section-head"><div><h2>Participantes</h2><p id="participantSubtitle">0 de 30 vagas ocupadas.</p></div></div>
+          <div class="card">
+            <div class="participants" id="participantsBox"></div>
+          </div>
+        </section>
+
+        <div class="footer-note">Brasileirão 2026: 38 rodadas / 380 confrontos • referência de confrontos: 365Scores.<br>Datas e horários ainda não detalhados podem sofrer alteração oficial • regras 10/7/5/2/0 • fechamento, pontuação, ranking e premiação automáticos • admin validado por UUID no servidor • dados protegidos pelo Supabase</div>
+      </main>
+    </div>
+
+    <nav class="mobile-nav">
+      <button class="active" data-page="home" onclick="showPage('home')">🏠<br>Início</button>
+      <button data-page="palpites" onclick="showPage('palpites')">🎯<br>Palpites</button>
+      <button data-page="ranking" onclick="showPage('ranking')">🏆<br>Ranking</button>
+      <button data-page="regras" onclick="showPage('regras')">📋<br>Regras</button>
+      <button data-page="admin" id="adminNavMobile" style="display:none" onclick="showPage('admin')">⚙️<br>Admin</button>
+    </nav>
+  </div>
+
+  <div id="joinModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head"><h3 style="margin:0">Entrar em um bolão</h3><button class="close" onclick="closeModal('joinModal')">×</button></div>
+      <div class="field"><label>Código do bolão</label><input id="joinCode" placeholder="Ex.: GALERA26"></div>
+      <div id="inviteDetectedBox" class="notice hidden" style="margin-top:12px">
+        🔗 Convite detectado. Entre na sua conta ou crie uma conta e depois confirme a entrada no bolão.
+      </div>
+      <div style="height:12px"></div>
+      <button class="btn btn-primary" style="width:100%" onclick="joinPool()">Entrar no bolão</button>
+    </div>
+  </div>
+
+  <div id="poolModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head"><h3 style="margin:0">Criar novo bolão</h3><button class="close" onclick="closeModal('poolModal')">×</button></div>
+      <div class="stack">
+        <div class="field"><label>Nome do bolão</label><input id="createPoolName" placeholder="Ex.: Copa da Firma"></div>
+        <div class="field"><label>Código de convite</label><input id="createPoolCode" placeholder="Ex.: FIRMA2026"></div>
+        <div class="form-grid">
+          <div class="field"><label>🥇 1º lugar (%)</label><input id="createPrize1" type="number" min="0" max="100" value="60"></div>
+          <div class="field"><label>🥈 2º lugar (%)</label><input id="createPrize2" type="number" min="0" max="100" value="30"></div>
+          <div class="field"><label>🥉 3º lugar (%)</label><input id="createPrize3" type="number" min="0" max="100" value="10"></div>
+        </div>
+        <div class="notice">Máximo de <strong>30 participantes</strong>. Quem cria o bolão continua sendo jogador normal; o sistema cuida de jogos, pontuação, ranking e fechamento.</div>
+        <button class="btn btn-primary" onclick="createPool()">Criar bolão</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="shareInviteModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 style="margin:0">📨 Convidar amigos</h3>
+        <button class="close" onclick="closeModal('shareInviteModal')">×</button>
+      </div>
+
+      <div class="notice">
+        Envie este link para seus amigos. Ao abrir, o código do bolão já será identificado automaticamente.
+      </div>
+
+      <div class="invite-link-box">
+        <input id="shareInviteLink" readonly>
+        <button class="btn btn-secondary" onclick="copyInviteLink()">Copiar link</button>
+      </div>
+
+      <div class="invite-actions">
+        <button class="btn btn-primary" onclick="shareViaWhatsApp()">WhatsApp</button>
+        <button class="btn btn-secondary" onclick="nativeShareInvite()">Compartilhar</button>
+        <button class="btn btn-ghost" onclick="copyFullInvite()">Copiar convite</button>
+      </div>
+
+      <div style="margin-top:12px;color:var(--muted);font-size:12px;line-height:1.5">
+        Código do bolão: <strong id="shareInviteCode"></strong>
+      </div>
+    </div>
+  </div>
+
+  <div id="forgotPasswordModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 style="margin:0">🔐 Recuperar senha</h3>
+        <button class="close" onclick="closeModal('forgotPasswordModal')">×</button>
+      </div>
+      <p style="color:var(--muted);line-height:1.6">
+        Informe o e-mail da sua conta. Você receberá um link para criar uma nova senha.
+      </p>
+      <div class="field">
+        <label>E-mail</label>
+        <input id="forgotEmail" type="email" placeholder="voce@email.com">
+      </div>
+      <div style="height:12px"></div>
+      <button class="btn btn-primary" style="width:100%" onclick="sendPasswordReset()">Enviar link de recuperação</button>
+    </div>
+  </div>
+
+  <div id="newPasswordModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 style="margin:0">🔑 Criar nova senha</h3>
+      </div>
+      <p style="color:var(--muted);line-height:1.6">
+        Digite uma nova senha com pelo menos 8 caracteres.
+      </p>
+      <div class="stack">
+        <div class="field">
+          <label>Nova senha</label>
+          <input id="newPassword" type="password" placeholder="Mínimo 8 caracteres">
+        </div>
+        <div class="field">
+          <label>Confirmar nova senha</label>
+          <input id="newPasswordConfirm" type="password" placeholder="Repita a nova senha">
+        </div>
+        <button class="btn btn-primary" onclick="saveNewPassword()">Salvar nova senha</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://sickdbwrwrjyfkbqigzz.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_eoMkrNY7m2gGajo4iaYBsw_xPhxY_2z';
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
+);
+
+// Catálogo local usado SOMENTE pelo administrador para importar os jogos.
+// Não contém usuário, e-mail, senha nem segredo.
+const DEFAULT_FIXTURES = [{"id":"br01_01","league":"brasileirao","home":"Fluminense","away":"Grêmio","date":"2026-01-28","time":"","round":"Rodada 1","roundNumber":1,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"28 ou 29/01/2026"},{"id":"br01_02","league":"brasileirao","home":"Botafogo","away":"Cruzeiro","date":"2026-01-28","time":"","round":"Rodada 1","roundNumber":1,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"28 ou 29/01/2026"},{"id":"br01_03","league":"brasileirao","home":"São Paulo","away":"Flamengo","date":"2026-01-28","time":"","round":"Rodada 1","roundNumber":1,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"28 ou 29/01/2026"},{"id":"br01_04","league":"brasileirao","home":"Corinthians","away":"Bahia","date":"2026-01-28","time":"","round":"Rodada 1","roundNumber":1,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"28 ou 29/01/2026"},{"id":"br01_05","league":"brasileirao","home":"Mirassol","away":"Vasco","date":"2026-01-28","time":"","round":"Rodada 1","roundNumber":1,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"28 ou 29/01/2026"},{"id":"br01_06","league":"brasileirao","home":"Atlético-MG","away":"Palmeiras","date":"2026-01-28","time":"","round":"Rodada 1","roundNumber":1,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"28 ou 29/01/2026"},{"id":"br01_07","league":"brasileirao","home":"Internacional","away":"Athletico-PR","date":"2026-01-28","time":"","round":"Rodada 1","roundNumber":1,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"28 ou 29/01/2026"},{"id":"br01_08","league":"brasileirao","home":"Coritiba","away":"RB Bragantino","date":"2026-01-28","time":"","round":"Rodada 1","roundNumber":1,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"28 ou 29/01/2026"},{"id":"br01_09","league":"brasileirao","home":"Vitória","away":"Remo","date":"2026-01-28","time":"","round":"Rodada 1","roundNumber":1,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"28 ou 29/01/2026"},{"id":"br01_10","league":"brasileirao","home":"Chapecoense","away":"Santos","date":"2026-01-28","time":"","round":"Rodada 1","roundNumber":1,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"28 ou 29/01/2026"},{"id":"br02_01","league":"brasileirao","home":"Flamengo","away":"Internacional","date":"2026-02-04","time":"","round":"Rodada 2","roundNumber":2,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 ou 05/02/2026"},{"id":"br02_02","league":"brasileirao","home":"Vasco","away":"Chapecoense","date":"2026-02-04","time":"","round":"Rodada 2","roundNumber":2,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 ou 05/02/2026"},{"id":"br02_03","league":"brasileirao","home":"Santos","away":"São Paulo","date":"2026-02-04","time":"","round":"Rodada 2","roundNumber":2,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 ou 05/02/2026"},{"id":"br02_04","league":"brasileirao","home":"Palmeiras","away":"Vitória","date":"2026-02-04","time":"","round":"Rodada 2","roundNumber":2,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 ou 05/02/2026"},{"id":"br02_05","league":"brasileirao","home":"RB Bragantino","away":"Atlético-MG","date":"2026-02-04","time":"","round":"Rodada 2","roundNumber":2,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 ou 05/02/2026"},{"id":"br02_06","league":"brasileirao","home":"Cruzeiro","away":"Coritiba","date":"2026-02-04","time":"","round":"Rodada 2","roundNumber":2,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 ou 05/02/2026"},{"id":"br02_07","league":"brasileirao","home":"Grêmio","away":"Botafogo","date":"2026-02-04","time":"","round":"Rodada 2","roundNumber":2,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 ou 05/02/2026"},{"id":"br02_08","league":"brasileirao","home":"Athletico-PR","away":"Corinthians","date":"2026-02-04","time":"","round":"Rodada 2","roundNumber":2,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 ou 05/02/2026"},{"id":"br02_09","league":"brasileirao","home":"Bahia","away":"Fluminense","date":"2026-02-04","time":"","round":"Rodada 2","roundNumber":2,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 ou 05/02/2026"},{"id":"br02_10","league":"brasileirao","home":"Remo","away":"Mirassol","date":"2026-02-04","time":"","round":"Rodada 2","roundNumber":2,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 ou 05/02/2026"},{"id":"br03_01","league":"brasileirao","home":"Fluminense","away":"Botafogo","date":"2026-02-11","time":"","round":"Rodada 3","roundNumber":3,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/02/2026"},{"id":"br03_02","league":"brasileirao","home":"Vasco","away":"Bahia","date":"2026-02-11","time":"","round":"Rodada 3","roundNumber":3,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/02/2026"},{"id":"br03_03","league":"brasileirao","home":"São Paulo","away":"Grêmio","date":"2026-02-11","time":"","round":"Rodada 3","roundNumber":3,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/02/2026"},{"id":"br03_04","league":"brasileirao","home":"Corinthians","away":"RB Bragantino","date":"2026-02-11","time":"","round":"Rodada 3","roundNumber":3,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/02/2026"},{"id":"br03_05","league":"brasileirao","home":"Mirassol","away":"Cruzeiro","date":"2026-02-11","time":"","round":"Rodada 3","roundNumber":3,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/02/2026"},{"id":"br03_06","league":"brasileirao","home":"Atlético-MG","away":"Remo","date":"2026-02-11","time":"","round":"Rodada 3","roundNumber":3,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/02/2026"},{"id":"br03_07","league":"brasileirao","home":"Internacional","away":"Palmeiras","date":"2026-02-11","time":"","round":"Rodada 3","roundNumber":3,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/02/2026"},{"id":"br03_08","league":"brasileirao","home":"Athletico-PR","away":"Santos","date":"2026-02-11","time":"","round":"Rodada 3","roundNumber":3,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/02/2026"},{"id":"br03_09","league":"brasileirao","home":"Vitória","away":"Flamengo","date":"2026-02-11","time":"","round":"Rodada 3","roundNumber":3,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/02/2026"},{"id":"br03_10","league":"brasileirao","home":"Chapecoense","away":"Coritiba","date":"2026-02-11","time":"","round":"Rodada 3","roundNumber":3,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/02/2026"},{"id":"br04_01","league":"brasileirao","home":"Flamengo","away":"Mirassol","date":"2026-02-25","time":"","round":"Rodada 4","roundNumber":4,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 ou 26/02/2026"},{"id":"br04_02","league":"brasileirao","home":"Botafogo","away":"Vitória","date":"2026-02-25","time":"","round":"Rodada 4","roundNumber":4,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 ou 26/02/2026"},{"id":"br04_03","league":"brasileirao","home":"Santos","away":"Vasco","date":"2026-02-25","time":"","round":"Rodada 4","roundNumber":4,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 ou 26/02/2026"},{"id":"br04_04","league":"brasileirao","home":"Palmeiras","away":"Fluminense","date":"2026-02-25","time":"","round":"Rodada 4","roundNumber":4,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 ou 26/02/2026"},{"id":"br04_05","league":"brasileirao","home":"RB Bragantino","away":"Athletico-PR","date":"2026-02-25","time":"","round":"Rodada 4","roundNumber":4,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 ou 26/02/2026"},{"id":"br04_06","league":"brasileirao","home":"Cruzeiro","away":"Corinthians","date":"2026-02-25","time":"","round":"Rodada 4","roundNumber":4,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 ou 26/02/2026"},{"id":"br04_07","league":"brasileirao","home":"Grêmio","away":"Atlético-MG","date":"2026-02-25","time":"","round":"Rodada 4","roundNumber":4,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 ou 26/02/2026"},{"id":"br04_08","league":"brasileirao","home":"Coritiba","away":"São Paulo","date":"2026-02-25","time":"","round":"Rodada 4","roundNumber":4,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 ou 26/02/2026"},{"id":"br04_09","league":"brasileirao","home":"Bahia","away":"Chapecoense","date":"2026-02-25","time":"","round":"Rodada 4","roundNumber":4,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 ou 26/02/2026"},{"id":"br04_10","league":"brasileirao","home":"Remo","away":"Internacional","date":"2026-02-25","time":"","round":"Rodada 4","roundNumber":4,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 ou 26/02/2026"},{"id":"br05_01","league":"brasileirao","home":"Flamengo","away":"Cruzeiro","date":"2026-03-11","time":"","round":"Rodada 5","roundNumber":5,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/03/2026"},{"id":"br05_02","league":"brasileirao","home":"Vasco","away":"Palmeiras","date":"2026-03-11","time":"","round":"Rodada 5","roundNumber":5,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/03/2026"},{"id":"br05_03","league":"brasileirao","home":"São Paulo","away":"Chapecoense","date":"2026-03-11","time":"","round":"Rodada 5","roundNumber":5,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/03/2026"},{"id":"br05_04","league":"brasileirao","home":"Corinthians","away":"Coritiba","date":"2026-03-11","time":"","round":"Rodada 5","roundNumber":5,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/03/2026"},{"id":"br05_05","league":"brasileirao","home":"Mirassol","away":"Santos","date":"2026-03-11","time":"","round":"Rodada 5","roundNumber":5,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/03/2026"},{"id":"br05_06","league":"brasileirao","home":"Atlético-MG","away":"Internacional","date":"2026-03-11","time":"","round":"Rodada 5","roundNumber":5,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/03/2026"},{"id":"br05_07","league":"brasileirao","home":"Grêmio","away":"RB Bragantino","date":"2026-03-11","time":"","round":"Rodada 5","roundNumber":5,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/03/2026"},{"id":"br05_08","league":"brasileirao","home":"Athletico-PR","away":"Botafogo","date":"2026-03-11","time":"","round":"Rodada 5","roundNumber":5,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/03/2026"},{"id":"br05_09","league":"brasileirao","home":"Bahia","away":"Vitória","date":"2026-03-11","time":"","round":"Rodada 5","roundNumber":5,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/03/2026"},{"id":"br05_10","league":"brasileirao","home":"Remo","away":"Fluminense","date":"2026-03-11","time":"","round":"Rodada 5","roundNumber":5,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 ou 12/03/2026"},{"id":"br06_01","league":"brasileirao","home":"Fluminense","away":"Athletico-PR","date":"2026-03-15","time":"","round":"Rodada 6","roundNumber":6,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"14 a 16/03/2026"},{"id":"br06_02","league":"brasileirao","home":"Botafogo","away":"Flamengo","date":"2026-03-15","time":"","round":"Rodada 6","roundNumber":6,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"14 a 16/03/2026"},{"id":"br06_03","league":"brasileirao","home":"Santos","away":"Corinthians","date":"2026-03-15","time":"","round":"Rodada 6","roundNumber":6,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"14 a 16/03/2026"},{"id":"br06_04","league":"brasileirao","home":"Palmeiras","away":"Mirassol","date":"2026-03-15","time":"","round":"Rodada 6","roundNumber":6,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"14 a 16/03/2026"},{"id":"br06_05","league":"brasileirao","home":"RB Bragantino","away":"São Paulo","date":"2026-03-15","time":"","round":"Rodada 6","roundNumber":6,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"14 a 16/03/2026"},{"id":"br06_06","league":"brasileirao","home":"Cruzeiro","away":"Vasco","date":"2026-03-15","time":"","round":"Rodada 6","roundNumber":6,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"14 a 16/03/2026"},{"id":"br06_07","league":"brasileirao","home":"Internacional","away":"Bahia","date":"2026-03-15","time":"","round":"Rodada 6","roundNumber":6,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"14 a 16/03/2026"},{"id":"br06_08","league":"brasileirao","home":"Coritiba","away":"Remo","date":"2026-03-15","time":"","round":"Rodada 6","roundNumber":6,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"14 a 16/03/2026"},{"id":"br06_09","league":"brasileirao","home":"Vitória","away":"Atlético-MG","date":"2026-03-15","time":"","round":"Rodada 6","roundNumber":6,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"14 a 16/03/2026"},{"id":"br06_10","league":"brasileirao","home":"Chapecoense","away":"Grêmio","date":"2026-03-15","time":"","round":"Rodada 6","roundNumber":6,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"14 a 16/03/2026"},{"id":"br07_01","league":"brasileirao","home":"Flamengo","away":"Remo","date":"2026-03-18","time":"","round":"Rodada 7","roundNumber":7,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 ou 19/03/2026"},{"id":"br07_02","league":"brasileirao","home":"Vasco","away":"Fluminense","date":"2026-03-18","time":"","round":"Rodada 7","roundNumber":7,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 ou 19/03/2026"},{"id":"br07_03","league":"brasileirao","home":"Santos","away":"Internacional","date":"2026-03-18","time":"","round":"Rodada 7","roundNumber":7,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 ou 19/03/2026"},{"id":"br07_04","league":"brasileirao","home":"Palmeiras","away":"Botafogo","date":"2026-03-18","time":"","round":"Rodada 7","roundNumber":7,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 ou 19/03/2026"},{"id":"br07_05","league":"brasileirao","home":"Mirassol","away":"Coritiba","date":"2026-03-18","time":"","round":"Rodada 7","roundNumber":7,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 ou 19/03/2026"},{"id":"br07_06","league":"brasileirao","home":"Atlético-MG","away":"São Paulo","date":"2026-03-18","time":"","round":"Rodada 7","roundNumber":7,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 ou 19/03/2026"},{"id":"br07_07","league":"brasileirao","home":"Grêmio","away":"Vitória","date":"2026-03-18","time":"","round":"Rodada 7","roundNumber":7,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 ou 19/03/2026"},{"id":"br07_08","league":"brasileirao","home":"Athletico-PR","away":"Cruzeiro","date":"2026-03-18","time":"","round":"Rodada 7","roundNumber":7,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 ou 19/03/2026"},{"id":"br07_09","league":"brasileirao","home":"Bahia","away":"RB Bragantino","date":"2026-03-18","time":"","round":"Rodada 7","roundNumber":7,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 ou 19/03/2026"},{"id":"br07_10","league":"brasileirao","home":"Chapecoense","away":"Corinthians","date":"2026-03-18","time":"","round":"Rodada 7","roundNumber":7,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 ou 19/03/2026"},{"id":"br08_01","league":"brasileirao","home":"Fluminense","away":"Atlético-MG","date":"2026-03-22","time":"","round":"Rodada 8","roundNumber":8,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"21 a 23/03/2026"},{"id":"br08_02","league":"brasileirao","home":"Vasco","away":"Grêmio","date":"2026-03-22","time":"","round":"Rodada 8","roundNumber":8,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"21 a 23/03/2026"},{"id":"br08_03","league":"brasileirao","home":"São Paulo","away":"Palmeiras","date":"2026-03-22","time":"","round":"Rodada 8","roundNumber":8,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"21 a 23/03/2026"},{"id":"br08_04","league":"brasileirao","home":"Corinthians","away":"Flamengo","date":"2026-03-22","time":"","round":"Rodada 8","roundNumber":8,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"21 a 23/03/2026"},{"id":"br08_05","league":"brasileirao","home":"RB Bragantino","away":"Botafogo","date":"2026-03-22","time":"","round":"Rodada 8","roundNumber":8,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"21 a 23/03/2026"},{"id":"br08_06","league":"brasileirao","home":"Cruzeiro","away":"Santos","date":"2026-03-22","time":"","round":"Rodada 8","roundNumber":8,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"21 a 23/03/2026"},{"id":"br08_07","league":"brasileirao","home":"Internacional","away":"Chapecoense","date":"2026-03-22","time":"","round":"Rodada 8","roundNumber":8,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"21 a 23/03/2026"},{"id":"br08_08","league":"brasileirao","home":"Athletico-PR","away":"Coritiba","date":"2026-03-22","time":"","round":"Rodada 8","roundNumber":8,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"21 a 23/03/2026"},{"id":"br08_09","league":"brasileirao","home":"Vitória","away":"Mirassol","date":"2026-03-22","time":"","round":"Rodada 8","roundNumber":8,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"21 a 23/03/2026"},{"id":"br08_10","league":"brasileirao","home":"Remo","away":"Bahia","date":"2026-03-22","time":"","round":"Rodada 8","roundNumber":8,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"21 a 23/03/2026"},{"id":"br09_01","league":"brasileirao","home":"Fluminense","away":"Corinthians","date":"2026-04-01","time":"","round":"Rodada 9","roundNumber":9,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"01 ou 02/04/2026"},{"id":"br09_02","league":"brasileirao","home":"Botafogo","away":"Mirassol","date":"2026-04-01","time":"","round":"Rodada 9","roundNumber":9,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"01 ou 02/04/2026"},{"id":"br09_03","league":"brasileirao","home":"Santos","away":"Remo","date":"2026-04-01","time":"","round":"Rodada 9","roundNumber":9,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"01 ou 02/04/2026"},{"id":"br09_04","league":"brasileirao","home":"Palmeiras","away":"Grêmio","date":"2026-04-01","time":"","round":"Rodada 9","roundNumber":9,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"01 ou 02/04/2026"},{"id":"br09_05","league":"brasileirao","home":"RB Bragantino","away":"Flamengo","date":"2026-04-01","time":"","round":"Rodada 9","roundNumber":9,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"01 ou 02/04/2026"},{"id":"br09_06","league":"brasileirao","home":"Cruzeiro","away":"Vitória","date":"2026-04-01","time":"","round":"Rodada 9","roundNumber":9,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"01 ou 02/04/2026"},{"id":"br09_07","league":"brasileirao","home":"Internacional","away":"São Paulo","date":"2026-04-01","time":"","round":"Rodada 9","roundNumber":9,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"01 ou 02/04/2026"},{"id":"br09_08","league":"brasileirao","home":"Coritiba","away":"Vasco","date":"2026-04-01","time":"","round":"Rodada 9","roundNumber":9,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"01 ou 02/04/2026"},{"id":"br09_09","league":"brasileirao","home":"Bahia","away":"Athletico-PR","date":"2026-04-01","time":"","round":"Rodada 9","roundNumber":9,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"01 ou 02/04/2026"},{"id":"br09_10","league":"brasileirao","home":"Chapecoense","away":"Atlético-MG","date":"2026-04-01","time":"","round":"Rodada 9","roundNumber":9,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"01 ou 02/04/2026"},{"id":"br10_01","league":"brasileirao","home":"Flamengo","away":"Santos","date":"2026-04-05","time":"","round":"Rodada 10","roundNumber":10,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 a 06/04/2026"},{"id":"br10_02","league":"brasileirao","home":"Vasco","away":"Botafogo","date":"2026-04-05","time":"","round":"Rodada 10","roundNumber":10,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 a 06/04/2026"},{"id":"br10_03","league":"brasileirao","home":"São Paulo","away":"Cruzeiro","date":"2026-04-05","time":"","round":"Rodada 10","roundNumber":10,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 a 06/04/2026"},{"id":"br10_04","league":"brasileirao","home":"Corinthians","away":"Internacional","date":"2026-04-05","time":"","round":"Rodada 10","roundNumber":10,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 a 06/04/2026"},{"id":"br10_05","league":"brasileirao","home":"Mirassol","away":"RB Bragantino","date":"2026-04-05","time":"","round":"Rodada 10","roundNumber":10,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 a 06/04/2026"},{"id":"br10_06","league":"brasileirao","home":"Atlético-MG","away":"Athletico-PR","date":"2026-04-05","time":"","round":"Rodada 10","roundNumber":10,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 a 06/04/2026"},{"id":"br10_07","league":"brasileirao","home":"Grêmio","away":"Remo","date":"2026-04-05","time":"","round":"Rodada 10","roundNumber":10,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 a 06/04/2026"},{"id":"br10_08","league":"brasileirao","home":"Coritiba","away":"Fluminense","date":"2026-04-05","time":"","round":"Rodada 10","roundNumber":10,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 a 06/04/2026"},{"id":"br10_09","league":"brasileirao","home":"Bahia","away":"Palmeiras","date":"2026-04-05","time":"","round":"Rodada 10","roundNumber":10,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 a 06/04/2026"},{"id":"br10_10","league":"brasileirao","home":"Chapecoense","away":"Vitória","date":"2026-04-05","time":"","round":"Rodada 10","roundNumber":10,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"04 a 06/04/2026"},{"id":"br11_01","league":"brasileirao","home":"Fluminense","away":"Flamengo","date":"2026-04-12","time":"","round":"Rodada 11","roundNumber":11,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 a 13/04/2026"},{"id":"br11_02","league":"brasileirao","home":"Botafogo","away":"Coritiba","date":"2026-04-12","time":"","round":"Rodada 11","roundNumber":11,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 a 13/04/2026"},{"id":"br11_03","league":"brasileirao","home":"Santos","away":"Atlético-MG","date":"2026-04-12","time":"","round":"Rodada 11","roundNumber":11,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 a 13/04/2026"},{"id":"br11_04","league":"brasileirao","home":"Corinthians","away":"Palmeiras","date":"2026-04-12","time":"","round":"Rodada 11","roundNumber":11,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 a 13/04/2026"},{"id":"br11_05","league":"brasileirao","home":"Mirassol","away":"Bahia","date":"2026-04-12","time":"","round":"Rodada 11","roundNumber":11,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 a 13/04/2026"},{"id":"br11_06","league":"brasileirao","home":"Cruzeiro","away":"RB Bragantino","date":"2026-04-12","time":"","round":"Rodada 11","roundNumber":11,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 a 13/04/2026"},{"id":"br11_07","league":"brasileirao","home":"Internacional","away":"Grêmio","date":"2026-04-12","time":"","round":"Rodada 11","roundNumber":11,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 a 13/04/2026"},{"id":"br11_08","league":"brasileirao","home":"Athletico-PR","away":"Chapecoense","date":"2026-04-12","time":"","round":"Rodada 11","roundNumber":11,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 a 13/04/2026"},{"id":"br11_09","league":"brasileirao","home":"Vitória","away":"São Paulo","date":"2026-04-12","time":"","round":"Rodada 11","roundNumber":11,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 a 13/04/2026"},{"id":"br11_10","league":"brasileirao","home":"Remo","away":"Vasco","date":"2026-04-12","time":"","round":"Rodada 11","roundNumber":11,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"11 a 13/04/2026"},{"id":"br12_01","league":"brasileirao","home":"Flamengo","away":"Bahia","date":"2026-04-19","time":"","round":"Rodada 12","roundNumber":12,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 a 20/04/2026"},{"id":"br12_02","league":"brasileirao","home":"Vasco","away":"São Paulo","date":"2026-04-19","time":"","round":"Rodada 12","roundNumber":12,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 a 20/04/2026"},{"id":"br12_03","league":"brasileirao","home":"Santos","away":"Fluminense","date":"2026-04-19","time":"","round":"Rodada 12","roundNumber":12,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 a 20/04/2026"},{"id":"br12_04","league":"brasileirao","home":"Palmeiras","away":"Athletico-PR","date":"2026-04-19","time":"","round":"Rodada 12","roundNumber":12,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 a 20/04/2026"},{"id":"br12_05","league":"brasileirao","home":"RB Bragantino","away":"Remo","date":"2026-04-19","time":"","round":"Rodada 12","roundNumber":12,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 a 20/04/2026"},{"id":"br12_06","league":"brasileirao","home":"Cruzeiro","away":"Grêmio","date":"2026-04-19","time":"","round":"Rodada 12","roundNumber":12,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 a 20/04/2026"},{"id":"br12_07","league":"brasileirao","home":"Internacional","away":"Mirassol","date":"2026-04-19","time":"","round":"Rodada 12","roundNumber":12,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 a 20/04/2026"},{"id":"br12_08","league":"brasileirao","home":"Coritiba","away":"Atlético-MG","date":"2026-04-19","time":"","round":"Rodada 12","roundNumber":12,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 a 20/04/2026"},{"id":"br12_09","league":"brasileirao","home":"Vitória","away":"Corinthians","date":"2026-04-19","time":"","round":"Rodada 12","roundNumber":12,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 a 20/04/2026"},{"id":"br12_10","league":"brasileirao","home":"Chapecoense","away":"Botafogo","date":"2026-04-19","time":"","round":"Rodada 12","roundNumber":12,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"18 a 20/04/2026"},{"id":"br13_01","league":"brasileirao","home":"Fluminense","away":"Chapecoense","date":"2026-04-25","time":"","round":"Rodada 13","roundNumber":13,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/04/2026"},{"id":"br13_02","league":"brasileirao","home":"Botafogo","away":"Internacional","date":"2026-04-25","time":"","round":"Rodada 13","roundNumber":13,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/04/2026"},{"id":"br13_03","league":"brasileirao","home":"São Paulo","away":"Mirassol","date":"2026-04-25","time":"","round":"Rodada 13","roundNumber":13,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/04/2026"},{"id":"br13_04","league":"brasileirao","home":"Corinthians","away":"Vasco","date":"2026-04-25","time":"","round":"Rodada 13","roundNumber":13,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/04/2026"},{"id":"br13_05","league":"brasileirao","home":"RB Bragantino","away":"Palmeiras","date":"2026-04-25","time":"","round":"Rodada 13","roundNumber":13,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/04/2026"},{"id":"br13_06","league":"brasileirao","home":"Atlético-MG","away":"Flamengo","date":"2026-04-25","time":"","round":"Rodada 13","roundNumber":13,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/04/2026"},{"id":"br13_07","league":"brasileirao","home":"Grêmio","away":"Coritiba","date":"2026-04-25","time":"","round":"Rodada 13","roundNumber":13,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/04/2026"},{"id":"br13_08","league":"brasileirao","home":"Athletico-PR","away":"Vitória","date":"2026-04-25","time":"","round":"Rodada 13","roundNumber":13,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/04/2026"},{"id":"br13_09","league":"brasileirao","home":"Bahia","away":"Santos","date":"2026-04-25","time":"","round":"Rodada 13","roundNumber":13,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/04/2026"},{"id":"br13_10","league":"brasileirao","home":"Remo","away":"Cruzeiro","date":"2026-04-25","time":"","round":"Rodada 13","roundNumber":13,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/04/2026"},{"id":"br14_01","league":"brasileirao","home":"Flamengo","away":"Vasco","date":"2026-05-03","time":"","round":"Rodada 14","roundNumber":14,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"02 a 04/05/2026"},{"id":"br14_02","league":"brasileirao","home":"Botafogo","away":"Remo","date":"2026-05-03","time":"","round":"Rodada 14","roundNumber":14,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"02 a 04/05/2026"},{"id":"br14_03","league":"brasileirao","home":"São Paulo","away":"Bahia","date":"2026-05-03","time":"","round":"Rodada 14","roundNumber":14,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"02 a 04/05/2026"},{"id":"br14_04","league":"brasileirao","home":"Palmeiras","away":"Santos","date":"2026-05-03","time":"","round":"Rodada 14","roundNumber":14,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"02 a 04/05/2026"},{"id":"br14_05","league":"brasileirao","home":"Mirassol","away":"Corinthians","date":"2026-05-03","time":"","round":"Rodada 14","roundNumber":14,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"02 a 04/05/2026"},{"id":"br14_06","league":"brasileirao","home":"Cruzeiro","away":"Atlético-MG","date":"2026-05-03","time":"","round":"Rodada 14","roundNumber":14,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"02 a 04/05/2026"},{"id":"br14_07","league":"brasileirao","home":"Internacional","away":"Fluminense","date":"2026-05-03","time":"","round":"Rodada 14","roundNumber":14,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"02 a 04/05/2026"},{"id":"br14_08","league":"brasileirao","home":"Athletico-PR","away":"Grêmio","date":"2026-05-03","time":"","round":"Rodada 14","roundNumber":14,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"02 a 04/05/2026"},{"id":"br14_09","league":"brasileirao","home":"Vitória","away":"Coritiba","date":"2026-05-03","time":"","round":"Rodada 14","roundNumber":14,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"02 a 04/05/2026"},{"id":"br14_10","league":"brasileirao","home":"Chapecoense","away":"RB Bragantino","date":"2026-05-03","time":"","round":"Rodada 14","roundNumber":14,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"02 a 04/05/2026"},{"id":"br15_01","league":"brasileirao","home":"Fluminense","away":"Vitória","date":"2026-05-10","time":"","round":"Rodada 15","roundNumber":15,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"09 a 11/05/2026"},{"id":"br15_02","league":"brasileirao","home":"Vasco","away":"Athletico-PR","date":"2026-05-10","time":"","round":"Rodada 15","roundNumber":15,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"09 a 11/05/2026"},{"id":"br15_03","league":"brasileirao","home":"Santos","away":"RB Bragantino","date":"2026-05-10","time":"","round":"Rodada 15","roundNumber":15,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"09 a 11/05/2026"},{"id":"br15_04","league":"brasileirao","home":"Corinthians","away":"São Paulo","date":"2026-05-10","time":"","round":"Rodada 15","roundNumber":15,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"09 a 11/05/2026"},{"id":"br15_05","league":"brasileirao","home":"Mirassol","away":"Chapecoense","date":"2026-05-10","time":"","round":"Rodada 15","roundNumber":15,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"09 a 11/05/2026"},{"id":"br15_06","league":"brasileirao","home":"Atlético-MG","away":"Botafogo","date":"2026-05-10","time":"","round":"Rodada 15","roundNumber":15,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"09 a 11/05/2026"},{"id":"br15_07","league":"brasileirao","home":"Grêmio","away":"Flamengo","date":"2026-05-10","time":"","round":"Rodada 15","roundNumber":15,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"09 a 11/05/2026"},{"id":"br15_08","league":"brasileirao","home":"Coritiba","away":"Internacional","date":"2026-05-10","time":"","round":"Rodada 15","roundNumber":15,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"09 a 11/05/2026"},{"id":"br15_09","league":"brasileirao","home":"Bahia","away":"Cruzeiro","date":"2026-05-10","time":"","round":"Rodada 15","roundNumber":15,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"09 a 11/05/2026"},{"id":"br15_10","league":"brasileirao","home":"Remo","away":"Palmeiras","date":"2026-05-10","time":"","round":"Rodada 15","roundNumber":15,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"09 a 11/05/2026"},{"id":"br16_01","league":"brasileirao","home":"Fluminense","away":"São Paulo","date":"2026-05-17","time":"","round":"Rodada 16","roundNumber":16,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"16 a 18/05/2026"},{"id":"br16_02","league":"brasileirao","home":"Botafogo","away":"Corinthians","date":"2026-05-17","time":"","round":"Rodada 16","roundNumber":16,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"16 a 18/05/2026"},{"id":"br16_03","league":"brasileirao","home":"Santos","away":"Coritiba","date":"2026-05-17","time":"","round":"Rodada 16","roundNumber":16,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"16 a 18/05/2026"},{"id":"br16_04","league":"brasileirao","home":"Palmeiras","away":"Cruzeiro","date":"2026-05-17","time":"","round":"Rodada 16","roundNumber":16,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"16 a 18/05/2026"},{"id":"br16_05","league":"brasileirao","home":"RB Bragantino","away":"Vitória","date":"2026-05-17","time":"","round":"Rodada 16","roundNumber":16,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"16 a 18/05/2026"},{"id":"br16_06","league":"brasileirao","home":"Atlético-MG","away":"Mirassol","date":"2026-05-17","time":"","round":"Rodada 16","roundNumber":16,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"16 a 18/05/2026"},{"id":"br16_07","league":"brasileirao","home":"Internacional","away":"Vasco","date":"2026-05-17","time":"","round":"Rodada 16","roundNumber":16,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"16 a 18/05/2026"},{"id":"br16_08","league":"brasileirao","home":"Athletico-PR","away":"Flamengo","date":"2026-05-17","time":"","round":"Rodada 16","roundNumber":16,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"16 a 18/05/2026"},{"id":"br16_09","league":"brasileirao","home":"Bahia","away":"Grêmio","date":"2026-05-17","time":"","round":"Rodada 16","roundNumber":16,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"16 a 18/05/2026"},{"id":"br16_10","league":"brasileirao","home":"Chapecoense","away":"Remo","date":"2026-05-17","time":"","round":"Rodada 16","roundNumber":16,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"16 a 18/05/2026"},{"id":"br17_01","league":"brasileirao","home":"Flamengo","away":"Palmeiras","date":"2026-05-24","time":"","round":"Rodada 17","roundNumber":17,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"23 a 25/05/2026"},{"id":"br17_02","league":"brasileirao","home":"Vasco","away":"RB Bragantino","date":"2026-05-24","time":"","round":"Rodada 17","roundNumber":17,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"23 a 25/05/2026"},{"id":"br17_03","league":"brasileirao","home":"São Paulo","away":"Botafogo","date":"2026-05-24","time":"","round":"Rodada 17","roundNumber":17,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"23 a 25/05/2026"},{"id":"br17_04","league":"brasileirao","home":"Corinthians","away":"Atlético-MG","date":"2026-05-24","time":"","round":"Rodada 17","roundNumber":17,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"23 a 25/05/2026"},{"id":"br17_05","league":"brasileirao","home":"Mirassol","away":"Fluminense","date":"2026-05-24","time":"","round":"Rodada 17","roundNumber":17,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"23 a 25/05/2026"},{"id":"br17_06","league":"brasileirao","home":"Cruzeiro","away":"Chapecoense","date":"2026-05-24","time":"","round":"Rodada 17","roundNumber":17,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"23 a 25/05/2026"},{"id":"br17_07","league":"brasileirao","home":"Grêmio","away":"Santos","date":"2026-05-24","time":"","round":"Rodada 17","roundNumber":17,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"23 a 25/05/2026"},{"id":"br17_08","league":"brasileirao","home":"Coritiba","away":"Bahia","date":"2026-05-24","time":"","round":"Rodada 17","roundNumber":17,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"23 a 25/05/2026"},{"id":"br17_09","league":"brasileirao","home":"Vitória","away":"Internacional","date":"2026-05-24","time":"","round":"Rodada 17","roundNumber":17,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"23 a 25/05/2026"},{"id":"br17_10","league":"brasileirao","home":"Remo","away":"Athletico-PR","date":"2026-05-24","time":"","round":"Rodada 17","roundNumber":17,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"23 a 25/05/2026"},{"id":"br18_01","league":"brasileirao","home":"Flamengo","away":"Coritiba","date":"2026-05-31","time":"","round":"Rodada 18","roundNumber":18,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"30/05 a 01/06/2026"},{"id":"br18_02","league":"brasileirao","home":"Vasco","away":"Atlético-MG","date":"2026-05-31","time":"","round":"Rodada 18","roundNumber":18,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"30/05 a 01/06/2026"},{"id":"br18_03","league":"brasileirao","home":"Santos","away":"Vitória","date":"2026-05-31","time":"","round":"Rodada 18","roundNumber":18,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"30/05 a 01/06/2026"},{"id":"br18_04","league":"brasileirao","home":"Palmeiras","away":"Chapecoense","date":"2026-05-31","time":"","round":"Rodada 18","roundNumber":18,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"30/05 a 01/06/2026"},{"id":"br18_05","league":"brasileirao","home":"RB Bragantino","away":"Internacional","date":"2026-05-31","time":"","round":"Rodada 18","roundNumber":18,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"30/05 a 01/06/2026"},{"id":"br18_06","league":"brasileirao","home":"Cruzeiro","away":"Fluminense","date":"2026-05-31","time":"","round":"Rodada 18","roundNumber":18,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"30/05 a 01/06/2026"},{"id":"br18_07","league":"brasileirao","home":"Grêmio","away":"Corinthians","date":"2026-05-31","time":"","round":"Rodada 18","roundNumber":18,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"30/05 a 01/06/2026"},{"id":"br18_08","league":"brasileirao","home":"Athletico-PR","away":"Mirassol","date":"2026-05-31","time":"","round":"Rodada 18","roundNumber":18,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"30/05 a 01/06/2026"},{"id":"br18_09","league":"brasileirao","home":"Bahia","away":"Botafogo","date":"2026-05-31","time":"","round":"Rodada 18","roundNumber":18,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"30/05 a 01/06/2026"},{"id":"br18_10","league":"brasileirao","home":"Remo","away":"São Paulo","date":"2026-05-31","time":"","round":"Rodada 18","roundNumber":18,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"30/05 a 01/06/2026"},{"id":"br19_01","league":"brasileirao","home":"Fluminense","away":"RB Bragantino","date":"2026-07-22","time":"","round":"Rodada 19","roundNumber":19,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"22 ou 23/07/2026"},{"id":"br19_02","league":"brasileirao","home":"Botafogo","away":"Santos","date":"2026-07-22","time":"","round":"Rodada 19","roundNumber":19,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"22 ou 23/07/2026"},{"id":"br19_03","league":"brasileirao","home":"São Paulo","away":"Athletico-PR","date":"2026-07-22","time":"","round":"Rodada 19","roundNumber":19,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"22 ou 23/07/2026"},{"id":"br19_04","league":"brasileirao","home":"Corinthians","away":"Remo","date":"2026-07-22","time":"","round":"Rodada 19","roundNumber":19,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"22 ou 23/07/2026"},{"id":"br19_05","league":"brasileirao","home":"Mirassol","away":"Grêmio","date":"2026-07-22","time":"","round":"Rodada 19","roundNumber":19,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"22 ou 23/07/2026"},{"id":"br19_06","league":"brasileirao","home":"Atlético-MG","away":"Bahia","date":"2026-07-22","time":"","round":"Rodada 19","roundNumber":19,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"22 ou 23/07/2026"},{"id":"br19_07","league":"brasileirao","home":"Internacional","away":"Cruzeiro","date":"2026-07-22","time":"","round":"Rodada 19","roundNumber":19,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"22 ou 23/07/2026"},{"id":"br19_08","league":"brasileirao","home":"Coritiba","away":"Palmeiras","date":"2026-07-22","time":"","round":"Rodada 19","roundNumber":19,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"22 ou 23/07/2026"},{"id":"br19_09","league":"brasileirao","home":"Vitória","away":"Vasco","date":"2026-07-22","time":"","round":"Rodada 19","roundNumber":19,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"22 ou 23/07/2026"},{"id":"br19_10","league":"brasileirao","home":"Chapecoense","away":"Flamengo","date":"2026-07-22","time":"","round":"Rodada 19","roundNumber":19,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"22 ou 23/07/2026"},{"id":"br20_01","league":"brasileirao","home":"Grêmio","away":"Fluminense","date":"2026-07-26","time":"","round":"Rodada 20","roundNumber":20,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/07/2026"},{"id":"br20_02","league":"brasileirao","home":"Cruzeiro","away":"Botafogo","date":"2026-07-26","time":"","round":"Rodada 20","roundNumber":20,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/07/2026"},{"id":"br20_03","league":"brasileirao","home":"Flamengo","away":"São Paulo","date":"2026-07-26","time":"","round":"Rodada 20","roundNumber":20,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/07/2026"},{"id":"br20_04","league":"brasileirao","home":"Bahia","away":"Corinthians","date":"2026-07-26","time":"","round":"Rodada 20","roundNumber":20,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/07/2026"},{"id":"br20_05","league":"brasileirao","home":"Vasco","away":"Mirassol","date":"2026-07-26","time":"","round":"Rodada 20","roundNumber":20,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/07/2026"},{"id":"br20_06","league":"brasileirao","home":"Palmeiras","away":"Atlético-MG","date":"2026-07-26","time":"","round":"Rodada 20","roundNumber":20,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/07/2026"},{"id":"br20_07","league":"brasileirao","home":"Athletico-PR","away":"Internacional","date":"2026-07-26","time":"","round":"Rodada 20","roundNumber":20,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/07/2026"},{"id":"br20_08","league":"brasileirao","home":"RB Bragantino","away":"Coritiba","date":"2026-07-26","time":"","round":"Rodada 20","roundNumber":20,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/07/2026"},{"id":"br20_09","league":"brasileirao","home":"Remo","away":"Vitória","date":"2026-07-26","time":"","round":"Rodada 20","roundNumber":20,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/07/2026"},{"id":"br20_10","league":"brasileirao","home":"Santos","away":"Chapecoense","date":"2026-07-26","time":"","round":"Rodada 20","roundNumber":20,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"25 a 27/07/2026"},{"id":"br21_01","league":"brasileirao","home":"Internacional","away":"Flamengo","date":"2026-07-29","time":"","round":"Rodada 21","roundNumber":21,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"29 ou 30/07/2026"},{"id":"br21_02","league":"brasileirao","home":"Chapecoense","away":"Vasco","date":"2026-07-29","time":"","round":"Rodada 21","roundNumber":21,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"29 ou 30/07/2026"},{"id":"br21_03","league":"brasileirao","home":"São Paulo","away":"Santos","date":"2026-07-29","time":"","round":"Rodada 21","roundNumber":21,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"29 ou 30/07/2026"},{"id":"br21_04","league":"brasileirao","home":"Vitória","away":"Palmeiras","date":"2026-07-29","time":"","round":"Rodada 21","roundNumber":21,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"29 ou 30/07/2026"},{"id":"br21_05","league":"brasileirao","home":"Atlético-MG","away":"RB Bragantino","date":"2026-07-29","time":"","round":"Rodada 21","roundNumber":21,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"29 ou 30/07/2026"},{"id":"br21_06","league":"brasileirao","home":"Coritiba","away":"Cruzeiro","date":"2026-07-29","time":"","round":"Rodada 21","roundNumber":21,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"29 ou 30/07/2026"},{"id":"br21_07","league":"brasileirao","home":"Botafogo","away":"Grêmio","date":"2026-07-29","time":"","round":"Rodada 21","roundNumber":21,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"29 ou 30/07/2026"},{"id":"br21_08","league":"brasileirao","home":"Corinthians","away":"Athletico-PR","date":"2026-07-29","time":"","round":"Rodada 21","roundNumber":21,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"29 ou 30/07/2026"},{"id":"br21_09","league":"brasileirao","home":"Fluminense","away":"Bahia","date":"2026-07-29","time":"","round":"Rodada 21","roundNumber":21,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"29 ou 30/07/2026"},{"id":"br21_10","league":"brasileirao","home":"Mirassol","away":"Remo","date":"2026-07-29","time":"","round":"Rodada 21","roundNumber":21,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"29 ou 30/07/2026"},{"id":"br22_01","league":"brasileirao","home":"Botafogo","away":"Fluminense","date":"2026-08-09","time":"","round":"Rodada 22","roundNumber":22,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"08 a 10/08/2026"},{"id":"br22_02","league":"brasileirao","home":"Bahia","away":"Vasco","date":"2026-08-09","time":"","round":"Rodada 22","roundNumber":22,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"08 a 10/08/2026"},{"id":"br22_03","league":"brasileirao","home":"Grêmio","away":"São Paulo","date":"2026-08-09","time":"","round":"Rodada 22","roundNumber":22,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"08 a 10/08/2026"},{"id":"br22_04","league":"brasileirao","home":"RB Bragantino","away":"Corinthians","date":"2026-08-09","time":"","round":"Rodada 22","roundNumber":22,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"08 a 10/08/2026"},{"id":"br22_05","league":"brasileirao","home":"Cruzeiro","away":"Mirassol","date":"2026-08-09","time":"","round":"Rodada 22","roundNumber":22,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"08 a 10/08/2026"},{"id":"br22_06","league":"brasileirao","home":"Remo","away":"Atlético-MG","date":"2026-08-09","time":"","round":"Rodada 22","roundNumber":22,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"08 a 10/08/2026"},{"id":"br22_07","league":"brasileirao","home":"Palmeiras","away":"Internacional","date":"2026-08-09","time":"","round":"Rodada 22","roundNumber":22,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"08 a 10/08/2026"},{"id":"br22_08","league":"brasileirao","home":"Santos","away":"Athletico-PR","date":"2026-08-09","time":"","round":"Rodada 22","roundNumber":22,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"08 a 10/08/2026"},{"id":"br22_09","league":"brasileirao","home":"Flamengo","away":"Vitória","date":"2026-08-09","time":"","round":"Rodada 22","roundNumber":22,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"08 a 10/08/2026"},{"id":"br22_10","league":"brasileirao","home":"Coritiba","away":"Chapecoense","date":"2026-08-09","time":"","round":"Rodada 22","roundNumber":22,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"08 a 10/08/2026"},{"id":"br23_01","league":"brasileirao","home":"Mirassol","away":"Flamengo","date":"2026-08-16","time":"","round":"Rodada 23","roundNumber":23,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"15 a 17/08/2026"},{"id":"br23_02","league":"brasileirao","home":"Vitória","away":"Botafogo","date":"2026-08-16","time":"","round":"Rodada 23","roundNumber":23,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"15 a 17/08/2026"},{"id":"br23_03","league":"brasileirao","home":"Vasco","away":"Santos","date":"2026-08-16","time":"","round":"Rodada 23","roundNumber":23,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"15 a 17/08/2026"},{"id":"br23_04","league":"brasileirao","home":"Fluminense","away":"Palmeiras","date":"2026-08-16","time":"","round":"Rodada 23","roundNumber":23,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"15 a 17/08/2026"},{"id":"br23_05","league":"brasileirao","home":"Athletico-PR","away":"RB Bragantino","date":"2026-08-16","time":"","round":"Rodada 23","roundNumber":23,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"15 a 17/08/2026"},{"id":"br23_06","league":"brasileirao","home":"Corinthians","away":"Cruzeiro","date":"2026-08-16","time":"","round":"Rodada 23","roundNumber":23,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"15 a 17/08/2026"},{"id":"br23_07","league":"brasileirao","home":"Atlético-MG","away":"Grêmio","date":"2026-08-16","time":"","round":"Rodada 23","roundNumber":23,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"15 a 17/08/2026"},{"id":"br23_08","league":"brasileirao","home":"São Paulo","away":"Coritiba","date":"2026-08-16","time":"","round":"Rodada 23","roundNumber":23,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"15 a 17/08/2026"},{"id":"br23_09","league":"brasileirao","home":"Chapecoense","away":"Bahia","date":"2026-08-16","time":"","round":"Rodada 23","roundNumber":23,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"15 a 17/08/2026"},{"id":"br23_10","league":"brasileirao","home":"Internacional","away":"Remo","date":"2026-08-16","time":"","round":"Rodada 23","roundNumber":23,"dateType":"basic","status":"closed","result":null,"source":"365Scores","dateWindow":"15 a 17/08/2026"},{"id":"br24_01","league":"brasileirao","home":"Cruzeiro","away":"Flamengo","date":"2026-08-22","time":"20:30","round":"Rodada 24","roundNumber":24,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"22 a 24/08/2026"},{"id":"br24_02","league":"brasileirao","home":"Palmeiras","away":"Vasco","date":"2026-08-23","time":"16:00","round":"Rodada 24","roundNumber":24,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"22 a 24/08/2026"},{"id":"br24_03","league":"brasileirao","home":"Chapecoense","away":"São Paulo","date":"2026-08-23","time":"18:30","round":"Rodada 24","roundNumber":24,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"22 a 24/08/2026"},{"id":"br24_04","league":"brasileirao","home":"Coritiba","away":"Corinthians","date":"2026-08-23","time":"19:30","round":"Rodada 24","roundNumber":24,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"22 a 24/08/2026"},{"id":"br24_05","league":"brasileirao","home":"Santos","away":"Mirassol","date":"2026-08-23","time":"18:30","round":"Rodada 24","roundNumber":24,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"22 a 24/08/2026"},{"id":"br24_06","league":"brasileirao","home":"Internacional","away":"Atlético-MG","date":"2026-08-22","time":"18:30","round":"Rodada 24","roundNumber":24,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"22 a 24/08/2026"},{"id":"br24_07","league":"brasileirao","home":"RB Bragantino","away":"Grêmio","date":"2026-08-23","time":"16:00","round":"Rodada 24","roundNumber":24,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"22 a 24/08/2026"},{"id":"br24_08","league":"brasileirao","home":"Botafogo","away":"Athletico-PR","date":"2026-08-24","time":"20:00","round":"Rodada 24","roundNumber":24,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"22 a 24/08/2026"},{"id":"br24_09","league":"brasileirao","home":"Vitória","away":"Bahia","date":"2026-08-23","time":"16:00","round":"Rodada 24","roundNumber":24,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"22 a 24/08/2026"},{"id":"br24_10","league":"brasileirao","home":"Fluminense","away":"Remo","date":"2026-08-22","time":"16:00","round":"Rodada 24","roundNumber":24,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"22 a 24/08/2026"},{"id":"br25_01","league":"brasileirao","home":"Athletico-PR","away":"Fluminense","date":"2026-08-30","time":"11:00","round":"Rodada 25","roundNumber":25,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"29 a 31/08/2026"},{"id":"br25_02","league":"brasileirao","home":"Flamengo","away":"Botafogo","date":"2026-08-30","time":"16:00","round":"Rodada 25","roundNumber":25,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"29 a 31/08/2026"},{"id":"br25_03","league":"brasileirao","home":"Corinthians","away":"Santos","date":"2026-08-30","time":"16:00","round":"Rodada 25","roundNumber":25,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"29 a 31/08/2026"},{"id":"br25_04","league":"brasileirao","home":"Mirassol","away":"Palmeiras","date":"2026-08-30","time":"19:30","round":"Rodada 25","roundNumber":25,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"29 a 31/08/2026"},{"id":"br25_05","league":"brasileirao","home":"São Paulo","away":"RB Bragantino","date":"2026-08-29","time":"20:00","round":"Rodada 25","roundNumber":25,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"29 a 31/08/2026"},{"id":"br25_06","league":"brasileirao","home":"Vasco","away":"Cruzeiro","date":"2026-08-29","time":"21:20","round":"Rodada 25","roundNumber":25,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"29 a 31/08/2026"},{"id":"br25_07","league":"brasileirao","home":"Bahia","away":"Internacional","date":"2026-08-30","time":"16:00","round":"Rodada 25","roundNumber":25,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"29 a 31/08/2026"},{"id":"br25_08","league":"brasileirao","home":"Remo","away":"Coritiba","date":"2026-08-31","time":"20:00","round":"Rodada 25","roundNumber":25,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"29 a 31/08/2026"},{"id":"br25_09","league":"brasileirao","home":"Atlético-MG","away":"Vitória","date":"2026-08-29","time":"18:30","round":"Rodada 25","roundNumber":25,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"29 a 31/08/2026"},{"id":"br25_10","league":"brasileirao","home":"Grêmio","away":"Chapecoense","date":"2026-08-30","time":"18:30","round":"Rodada 25","roundNumber":25,"dateType":"detailed","status":"open","result":null,"source":"365Scores","dateWindow":"29 a 31/08/2026"},{"id":"br26_01","league":"brasileirao","home":"Remo","away":"Flamengo","date":"2026-09-06","time":"","round":"Rodada 26","roundNumber":26,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"05 a 07/09/2026"},{"id":"br26_02","league":"brasileirao","home":"Fluminense","away":"Vasco","date":"2026-09-05","time":"","round":"Rodada 26","roundNumber":26,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"05 a 07/09/2026"},{"id":"br26_03","league":"brasileirao","home":"Internacional","away":"Santos","date":"2026-09-06","time":"","round":"Rodada 26","roundNumber":26,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"05 a 07/09/2026"},{"id":"br26_04","league":"brasileirao","home":"Botafogo","away":"Palmeiras","date":"2026-09-06","time":"","round":"Rodada 26","roundNumber":26,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"05 a 07/09/2026"},{"id":"br26_05","league":"brasileirao","home":"Coritiba","away":"Mirassol","date":"2026-09-05","time":"","round":"Rodada 26","roundNumber":26,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"05 a 07/09/2026"},{"id":"br26_06","league":"brasileirao","home":"São Paulo","away":"Atlético-MG","date":"2026-09-05","time":"","round":"Rodada 26","roundNumber":26,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"05 a 07/09/2026"},{"id":"br26_07","league":"brasileirao","home":"Vitória","away":"Grêmio","date":"2026-09-07","time":"","round":"Rodada 26","roundNumber":26,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"05 a 07/09/2026"},{"id":"br26_08","league":"brasileirao","home":"Cruzeiro","away":"Athletico-PR","date":"2026-09-06","time":"","round":"Rodada 26","roundNumber":26,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"05 a 07/09/2026"},{"id":"br26_09","league":"brasileirao","home":"RB Bragantino","away":"Bahia","date":"2026-09-05","time":"","round":"Rodada 26","roundNumber":26,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"05 a 07/09/2026"},{"id":"br26_10","league":"brasileirao","home":"Corinthians","away":"Chapecoense","date":"2026-09-06","time":"","round":"Rodada 26","roundNumber":26,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"05 a 07/09/2026"},{"id":"br27_01","league":"brasileirao","home":"Atlético-MG","away":"Fluminense","date":"2026-09-13","time":"","round":"Rodada 27","roundNumber":27,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"12 a 14/09/2026"},{"id":"br27_02","league":"brasileirao","home":"Grêmio","away":"Vasco","date":"2026-09-13","time":"","round":"Rodada 27","roundNumber":27,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"12 a 14/09/2026"},{"id":"br27_03","league":"brasileirao","home":"Palmeiras","away":"São Paulo","date":"2026-09-13","time":"","round":"Rodada 27","roundNumber":27,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"12 a 14/09/2026"},{"id":"br27_04","league":"brasileirao","home":"Flamengo","away":"Corinthians","date":"2026-09-13","time":"","round":"Rodada 27","roundNumber":27,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"12 a 14/09/2026"},{"id":"br27_05","league":"brasileirao","home":"Botafogo","away":"RB Bragantino","date":"2026-09-13","time":"","round":"Rodada 27","roundNumber":27,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"12 a 14/09/2026"},{"id":"br27_06","league":"brasileirao","home":"Santos","away":"Cruzeiro","date":"2026-09-13","time":"","round":"Rodada 27","roundNumber":27,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"12 a 14/09/2026"},{"id":"br27_07","league":"brasileirao","home":"Chapecoense","away":"Internacional","date":"2026-09-13","time":"","round":"Rodada 27","roundNumber":27,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"12 a 14/09/2026"},{"id":"br27_08","league":"brasileirao","home":"Coritiba","away":"Athletico-PR","date":"2026-09-13","time":"","round":"Rodada 27","roundNumber":27,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"12 a 14/09/2026"},{"id":"br27_09","league":"brasileirao","home":"Mirassol","away":"Vitória","date":"2026-09-13","time":"","round":"Rodada 27","roundNumber":27,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"12 a 14/09/2026"},{"id":"br27_10","league":"brasileirao","home":"Bahia","away":"Remo","date":"2026-09-13","time":"","round":"Rodada 27","roundNumber":27,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"12 a 14/09/2026"},{"id":"br28_01","league":"brasileirao","home":"Corinthians","away":"Fluminense","date":"2026-09-20","time":"","round":"Rodada 28","roundNumber":28,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"19 a 21/09/2026"},{"id":"br28_02","league":"brasileirao","home":"Mirassol","away":"Botafogo","date":"2026-09-20","time":"","round":"Rodada 28","roundNumber":28,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"19 a 21/09/2026"},{"id":"br28_03","league":"brasileirao","home":"Remo","away":"Santos","date":"2026-09-20","time":"","round":"Rodada 28","roundNumber":28,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"19 a 21/09/2026"},{"id":"br28_04","league":"brasileirao","home":"Grêmio","away":"Palmeiras","date":"2026-09-20","time":"","round":"Rodada 28","roundNumber":28,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"19 a 21/09/2026"},{"id":"br28_05","league":"brasileirao","home":"Flamengo","away":"RB Bragantino","date":"2026-09-20","time":"","round":"Rodada 28","roundNumber":28,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"19 a 21/09/2026"},{"id":"br28_06","league":"brasileirao","home":"Vitória","away":"Cruzeiro","date":"2026-09-20","time":"","round":"Rodada 28","roundNumber":28,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"19 a 21/09/2026"},{"id":"br28_07","league":"brasileirao","home":"São Paulo","away":"Internacional","date":"2026-09-20","time":"","round":"Rodada 28","roundNumber":28,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"19 a 21/09/2026"},{"id":"br28_08","league":"brasileirao","home":"Vasco","away":"Coritiba","date":"2026-09-20","time":"","round":"Rodada 28","roundNumber":28,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"19 a 21/09/2026"},{"id":"br28_09","league":"brasileirao","home":"Athletico-PR","away":"Bahia","date":"2026-09-20","time":"","round":"Rodada 28","roundNumber":28,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"19 a 21/09/2026"},{"id":"br28_10","league":"brasileirao","home":"Atlético-MG","away":"Chapecoense","date":"2026-09-20","time":"","round":"Rodada 28","roundNumber":28,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"19 a 21/09/2026"},{"id":"br29_01","league":"brasileirao","home":"Santos","away":"Flamengo","date":"2026-10-07","time":"","round":"Rodada 29","roundNumber":29,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"07 ou 08/10/2026"},{"id":"br29_02","league":"brasileirao","home":"Botafogo","away":"Vasco","date":"2026-10-07","time":"","round":"Rodada 29","roundNumber":29,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"07 ou 08/10/2026"},{"id":"br29_03","league":"brasileirao","home":"Cruzeiro","away":"São Paulo","date":"2026-10-07","time":"","round":"Rodada 29","roundNumber":29,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"07 ou 08/10/2026"},{"id":"br29_04","league":"brasileirao","home":"Internacional","away":"Corinthians","date":"2026-10-07","time":"","round":"Rodada 29","roundNumber":29,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"07 ou 08/10/2026"},{"id":"br29_05","league":"brasileirao","home":"RB Bragantino","away":"Mirassol","date":"2026-10-07","time":"","round":"Rodada 29","roundNumber":29,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"07 ou 08/10/2026"},{"id":"br29_06","league":"brasileirao","home":"Athletico-PR","away":"Atlético-MG","date":"2026-10-07","time":"","round":"Rodada 29","roundNumber":29,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"07 ou 08/10/2026"},{"id":"br29_07","league":"brasileirao","home":"Remo","away":"Grêmio","date":"2026-10-07","time":"","round":"Rodada 29","roundNumber":29,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"07 ou 08/10/2026"},{"id":"br29_08","league":"brasileirao","home":"Fluminense","away":"Coritiba","date":"2026-10-07","time":"","round":"Rodada 29","roundNumber":29,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"07 ou 08/10/2026"},{"id":"br29_09","league":"brasileirao","home":"Palmeiras","away":"Bahia","date":"2026-10-07","time":"","round":"Rodada 29","roundNumber":29,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"07 ou 08/10/2026"},{"id":"br29_10","league":"brasileirao","home":"Vitória","away":"Chapecoense","date":"2026-10-07","time":"","round":"Rodada 29","roundNumber":29,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"07 ou 08/10/2026"},{"id":"br30_01","league":"brasileirao","home":"Flamengo","away":"Fluminense","date":"2026-10-11","time":"","round":"Rodada 30","roundNumber":30,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"10 a 12/10/2026"},{"id":"br30_02","league":"brasileirao","home":"Coritiba","away":"Botafogo","date":"2026-10-11","time":"","round":"Rodada 30","roundNumber":30,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"10 a 12/10/2026"},{"id":"br30_03","league":"brasileirao","home":"Atlético-MG","away":"Santos","date":"2026-10-11","time":"","round":"Rodada 30","roundNumber":30,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"10 a 12/10/2026"},{"id":"br30_04","league":"brasileirao","home":"Palmeiras","away":"Corinthians","date":"2026-10-11","time":"","round":"Rodada 30","roundNumber":30,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"10 a 12/10/2026"},{"id":"br30_05","league":"brasileirao","home":"Bahia","away":"Mirassol","date":"2026-10-11","time":"","round":"Rodada 30","roundNumber":30,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"10 a 12/10/2026"},{"id":"br30_06","league":"brasileirao","home":"RB Bragantino","away":"Cruzeiro","date":"2026-10-11","time":"","round":"Rodada 30","roundNumber":30,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"10 a 12/10/2026"},{"id":"br30_07","league":"brasileirao","home":"Grêmio","away":"Internacional","date":"2026-10-11","time":"","round":"Rodada 30","roundNumber":30,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"10 a 12/10/2026"},{"id":"br30_08","league":"brasileirao","home":"Chapecoense","away":"Athletico-PR","date":"2026-10-11","time":"","round":"Rodada 30","roundNumber":30,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"10 a 12/10/2026"},{"id":"br30_09","league":"brasileirao","home":"São Paulo","away":"Vitória","date":"2026-10-11","time":"","round":"Rodada 30","roundNumber":30,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"10 a 12/10/2026"},{"id":"br30_10","league":"brasileirao","home":"Vasco","away":"Remo","date":"2026-10-11","time":"","round":"Rodada 30","roundNumber":30,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"10 a 12/10/2026"},{"id":"br31_01","league":"brasileirao","home":"Bahia","away":"Flamengo","date":"2026-10-18","time":"","round":"Rodada 31","roundNumber":31,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"17 a 19/10/2026"},{"id":"br31_02","league":"brasileirao","home":"São Paulo","away":"Vasco","date":"2026-10-18","time":"","round":"Rodada 31","roundNumber":31,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"17 a 19/10/2026"},{"id":"br31_03","league":"brasileirao","home":"Fluminense","away":"Santos","date":"2026-10-18","time":"","round":"Rodada 31","roundNumber":31,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"17 a 19/10/2026"},{"id":"br31_04","league":"brasileirao","home":"Athletico-PR","away":"Palmeiras","date":"2026-10-18","time":"","round":"Rodada 31","roundNumber":31,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"17 a 19/10/2026"},{"id":"br31_05","league":"brasileirao","home":"Remo","away":"RB Bragantino","date":"2026-10-18","time":"","round":"Rodada 31","roundNumber":31,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"17 a 19/10/2026"},{"id":"br31_06","league":"brasileirao","home":"Grêmio","away":"Cruzeiro","date":"2026-10-18","time":"","round":"Rodada 31","roundNumber":31,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"17 a 19/10/2026"},{"id":"br31_07","league":"brasileirao","home":"Mirassol","away":"Internacional","date":"2026-10-18","time":"","round":"Rodada 31","roundNumber":31,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"17 a 19/10/2026"},{"id":"br31_08","league":"brasileirao","home":"Atlético-MG","away":"Coritiba","date":"2026-10-18","time":"","round":"Rodada 31","roundNumber":31,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"17 a 19/10/2026"},{"id":"br31_09","league":"brasileirao","home":"Corinthians","away":"Vitória","date":"2026-10-18","time":"","round":"Rodada 31","roundNumber":31,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"17 a 19/10/2026"},{"id":"br31_10","league":"brasileirao","home":"Botafogo","away":"Chapecoense","date":"2026-10-18","time":"","round":"Rodada 31","roundNumber":31,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"17 a 19/10/2026"},{"id":"br32_01","league":"brasileirao","home":"Chapecoense","away":"Fluminense","date":"2026-10-25","time":"","round":"Rodada 32","roundNumber":32,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"24 a 26/10/2026"},{"id":"br32_02","league":"brasileirao","home":"Internacional","away":"Botafogo","date":"2026-10-25","time":"","round":"Rodada 32","roundNumber":32,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"24 a 26/10/2026"},{"id":"br32_03","league":"brasileirao","home":"Mirassol","away":"São Paulo","date":"2026-10-25","time":"","round":"Rodada 32","roundNumber":32,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"24 a 26/10/2026"},{"id":"br32_04","league":"brasileirao","home":"Vasco","away":"Corinthians","date":"2026-10-25","time":"","round":"Rodada 32","roundNumber":32,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"24 a 26/10/2026"},{"id":"br32_05","league":"brasileirao","home":"Palmeiras","away":"RB Bragantino","date":"2026-10-25","time":"","round":"Rodada 32","roundNumber":32,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"24 a 26/10/2026"},{"id":"br32_06","league":"brasileirao","home":"Flamengo","away":"Atlético-MG","date":"2026-10-25","time":"","round":"Rodada 32","roundNumber":32,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"24 a 26/10/2026"},{"id":"br32_07","league":"brasileirao","home":"Coritiba","away":"Grêmio","date":"2026-10-25","time":"","round":"Rodada 32","roundNumber":32,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"24 a 26/10/2026"},{"id":"br32_08","league":"brasileirao","home":"Vitória","away":"Athletico-PR","date":"2026-10-25","time":"","round":"Rodada 32","roundNumber":32,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"24 a 26/10/2026"},{"id":"br32_09","league":"brasileirao","home":"Santos","away":"Bahia","date":"2026-10-25","time":"","round":"Rodada 32","roundNumber":32,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"24 a 26/10/2026"},{"id":"br32_10","league":"brasileirao","home":"Cruzeiro","away":"Remo","date":"2026-10-25","time":"","round":"Rodada 32","roundNumber":32,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"24 a 26/10/2026"},{"id":"br33_01","league":"brasileirao","home":"Vasco","away":"Flamengo","date":"2026-10-28","time":"","round":"Rodada 33","roundNumber":33,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/10/2026"},{"id":"br33_02","league":"brasileirao","home":"Remo","away":"Botafogo","date":"2026-10-28","time":"","round":"Rodada 33","roundNumber":33,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/10/2026"},{"id":"br33_03","league":"brasileirao","home":"Bahia","away":"São Paulo","date":"2026-10-28","time":"","round":"Rodada 33","roundNumber":33,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/10/2026"},{"id":"br33_04","league":"brasileirao","home":"Santos","away":"Palmeiras","date":"2026-10-28","time":"","round":"Rodada 33","roundNumber":33,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/10/2026"},{"id":"br33_05","league":"brasileirao","home":"Corinthians","away":"Mirassol","date":"2026-10-28","time":"","round":"Rodada 33","roundNumber":33,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/10/2026"},{"id":"br33_06","league":"brasileirao","home":"Atlético-MG","away":"Cruzeiro","date":"2026-10-28","time":"","round":"Rodada 33","roundNumber":33,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/10/2026"},{"id":"br33_07","league":"brasileirao","home":"Fluminense","away":"Internacional","date":"2026-10-28","time":"","round":"Rodada 33","roundNumber":33,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/10/2026"},{"id":"br33_08","league":"brasileirao","home":"Grêmio","away":"Athletico-PR","date":"2026-10-28","time":"","round":"Rodada 33","roundNumber":33,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/10/2026"},{"id":"br33_09","league":"brasileirao","home":"Coritiba","away":"Vitória","date":"2026-10-28","time":"","round":"Rodada 33","roundNumber":33,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/10/2026"},{"id":"br33_10","league":"brasileirao","home":"RB Bragantino","away":"Chapecoense","date":"2026-10-28","time":"","round":"Rodada 33","roundNumber":33,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/10/2026"},{"id":"br34_01","league":"brasileirao","home":"Vitória","away":"Fluminense","date":"2026-11-04","time":"","round":"Rodada 34","roundNumber":34,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"04 ou 05/11/2026"},{"id":"br34_02","league":"brasileirao","home":"Athletico-PR","away":"Vasco","date":"2026-11-04","time":"","round":"Rodada 34","roundNumber":34,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"04 ou 05/11/2026"},{"id":"br34_03","league":"brasileirao","home":"RB Bragantino","away":"Santos","date":"2026-11-04","time":"","round":"Rodada 34","roundNumber":34,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"04 ou 05/11/2026"},{"id":"br34_04","league":"brasileirao","home":"São Paulo","away":"Corinthians","date":"2026-11-04","time":"","round":"Rodada 34","roundNumber":34,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"04 ou 05/11/2026"},{"id":"br34_05","league":"brasileirao","home":"Chapecoense","away":"Mirassol","date":"2026-11-04","time":"","round":"Rodada 34","roundNumber":34,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"04 ou 05/11/2026"},{"id":"br34_06","league":"brasileirao","home":"Botafogo","away":"Atlético-MG","date":"2026-11-04","time":"","round":"Rodada 34","roundNumber":34,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"04 ou 05/11/2026"},{"id":"br34_07","league":"brasileirao","home":"Flamengo","away":"Grêmio","date":"2026-11-04","time":"","round":"Rodada 34","roundNumber":34,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"04 ou 05/11/2026"},{"id":"br34_08","league":"brasileirao","home":"Internacional","away":"Coritiba","date":"2026-11-04","time":"","round":"Rodada 34","roundNumber":34,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"04 ou 05/11/2026"},{"id":"br34_09","league":"brasileirao","home":"Cruzeiro","away":"Bahia","date":"2026-11-04","time":"","round":"Rodada 34","roundNumber":34,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"04 ou 05/11/2026"},{"id":"br34_10","league":"brasileirao","home":"Palmeiras","away":"Remo","date":"2026-11-04","time":"","round":"Rodada 34","roundNumber":34,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"04 ou 05/11/2026"},{"id":"br35_01","league":"brasileirao","home":"São Paulo","away":"Fluminense","date":"2026-11-18","time":"","round":"Rodada 35","roundNumber":35,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"18 ou 19/11/2026"},{"id":"br35_02","league":"brasileirao","home":"Corinthians","away":"Botafogo","date":"2026-11-18","time":"","round":"Rodada 35","roundNumber":35,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"18 ou 19/11/2026"},{"id":"br35_03","league":"brasileirao","home":"Coritiba","away":"Santos","date":"2026-11-18","time":"","round":"Rodada 35","roundNumber":35,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"18 ou 19/11/2026"},{"id":"br35_04","league":"brasileirao","home":"Cruzeiro","away":"Palmeiras","date":"2026-11-18","time":"","round":"Rodada 35","roundNumber":35,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"18 ou 19/11/2026"},{"id":"br35_05","league":"brasileirao","home":"Vitória","away":"RB Bragantino","date":"2026-11-18","time":"","round":"Rodada 35","roundNumber":35,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"18 ou 19/11/2026"},{"id":"br35_06","league":"brasileirao","home":"Mirassol","away":"Atlético-MG","date":"2026-11-18","time":"","round":"Rodada 35","roundNumber":35,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"18 ou 19/11/2026"},{"id":"br35_07","league":"brasileirao","home":"Vasco","away":"Internacional","date":"2026-11-18","time":"","round":"Rodada 35","roundNumber":35,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"18 ou 19/11/2026"},{"id":"br35_08","league":"brasileirao","home":"Flamengo","away":"Athletico-PR","date":"2026-11-18","time":"","round":"Rodada 35","roundNumber":35,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"18 ou 19/11/2026"},{"id":"br35_09","league":"brasileirao","home":"Grêmio","away":"Bahia","date":"2026-11-18","time":"","round":"Rodada 35","roundNumber":35,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"18 ou 19/11/2026"},{"id":"br35_10","league":"brasileirao","home":"Remo","away":"Chapecoense","date":"2026-11-18","time":"","round":"Rodada 35","roundNumber":35,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"18 ou 19/11/2026"},{"id":"br36_01","league":"brasileirao","home":"Palmeiras","away":"Flamengo","date":"2026-11-22","time":"","round":"Rodada 36","roundNumber":36,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"21 a 23/11/2026"},{"id":"br36_02","league":"brasileirao","home":"RB Bragantino","away":"Vasco","date":"2026-11-22","time":"","round":"Rodada 36","roundNumber":36,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"21 a 23/11/2026"},{"id":"br36_03","league":"brasileirao","home":"Botafogo","away":"São Paulo","date":"2026-11-22","time":"","round":"Rodada 36","roundNumber":36,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"21 a 23/11/2026"},{"id":"br36_04","league":"brasileirao","home":"Atlético-MG","away":"Corinthians","date":"2026-11-22","time":"","round":"Rodada 36","roundNumber":36,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"21 a 23/11/2026"},{"id":"br36_05","league":"brasileirao","home":"Fluminense","away":"Mirassol","date":"2026-11-22","time":"","round":"Rodada 36","roundNumber":36,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"21 a 23/11/2026"},{"id":"br36_06","league":"brasileirao","home":"Chapecoense","away":"Cruzeiro","date":"2026-11-22","time":"","round":"Rodada 36","roundNumber":36,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"21 a 23/11/2026"},{"id":"br36_07","league":"brasileirao","home":"Santos","away":"Grêmio","date":"2026-11-22","time":"","round":"Rodada 36","roundNumber":36,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"21 a 23/11/2026"},{"id":"br36_08","league":"brasileirao","home":"Bahia","away":"Coritiba","date":"2026-11-22","time":"","round":"Rodada 36","roundNumber":36,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"21 a 23/11/2026"},{"id":"br36_09","league":"brasileirao","home":"Internacional","away":"Vitória","date":"2026-11-22","time":"","round":"Rodada 36","roundNumber":36,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"21 a 23/11/2026"},{"id":"br36_10","league":"brasileirao","home":"Athletico-PR","away":"Remo","date":"2026-11-22","time":"","round":"Rodada 36","roundNumber":36,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"21 a 23/11/2026"},{"id":"br37_01","league":"brasileirao","home":"Coritiba","away":"Flamengo","date":"2026-11-29","time":"","round":"Rodada 37","roundNumber":37,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/11/2026"},{"id":"br37_02","league":"brasileirao","home":"Atlético-MG","away":"Vasco","date":"2026-11-29","time":"","round":"Rodada 37","roundNumber":37,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/11/2026"},{"id":"br37_03","league":"brasileirao","home":"Vitória","away":"Santos","date":"2026-11-29","time":"","round":"Rodada 37","roundNumber":37,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/11/2026"},{"id":"br37_04","league":"brasileirao","home":"Chapecoense","away":"Palmeiras","date":"2026-11-29","time":"","round":"Rodada 37","roundNumber":37,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/11/2026"},{"id":"br37_05","league":"brasileirao","home":"Internacional","away":"RB Bragantino","date":"2026-11-29","time":"","round":"Rodada 37","roundNumber":37,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/11/2026"},{"id":"br37_06","league":"brasileirao","home":"Fluminense","away":"Cruzeiro","date":"2026-11-29","time":"","round":"Rodada 37","roundNumber":37,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/11/2026"},{"id":"br37_07","league":"brasileirao","home":"Corinthians","away":"Grêmio","date":"2026-11-29","time":"","round":"Rodada 37","roundNumber":37,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/11/2026"},{"id":"br37_08","league":"brasileirao","home":"Mirassol","away":"Athletico-PR","date":"2026-11-29","time":"","round":"Rodada 37","roundNumber":37,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/11/2026"},{"id":"br37_09","league":"brasileirao","home":"Botafogo","away":"Bahia","date":"2026-11-29","time":"","round":"Rodada 37","roundNumber":37,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/11/2026"},{"id":"br37_10","league":"brasileirao","home":"São Paulo","away":"Remo","date":"2026-11-29","time":"","round":"Rodada 37","roundNumber":37,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"28 ou 29/11/2026"},{"id":"br38_01","league":"brasileirao","home":"RB Bragantino","away":"Fluminense","date":"2026-12-02","time":"","round":"Rodada 38","roundNumber":38,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"02/12/2026"},{"id":"br38_02","league":"brasileirao","home":"Santos","away":"Botafogo","date":"2026-12-02","time":"","round":"Rodada 38","roundNumber":38,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"02/12/2026"},{"id":"br38_03","league":"brasileirao","home":"Athletico-PR","away":"São Paulo","date":"2026-12-02","time":"","round":"Rodada 38","roundNumber":38,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"02/12/2026"},{"id":"br38_04","league":"brasileirao","home":"Remo","away":"Corinthians","date":"2026-12-02","time":"","round":"Rodada 38","roundNumber":38,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"02/12/2026"},{"id":"br38_05","league":"brasileirao","home":"Grêmio","away":"Mirassol","date":"2026-12-02","time":"","round":"Rodada 38","roundNumber":38,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"02/12/2026"},{"id":"br38_06","league":"brasileirao","home":"Bahia","away":"Atlético-MG","date":"2026-12-02","time":"","round":"Rodada 38","roundNumber":38,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"02/12/2026"},{"id":"br38_07","league":"brasileirao","home":"Cruzeiro","away":"Internacional","date":"2026-12-02","time":"","round":"Rodada 38","roundNumber":38,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"02/12/2026"},{"id":"br38_08","league":"brasileirao","home":"Palmeiras","away":"Coritiba","date":"2026-12-02","time":"","round":"Rodada 38","roundNumber":38,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"02/12/2026"},{"id":"br38_09","league":"brasileirao","home":"Vasco","away":"Vitória","date":"2026-12-02","time":"","round":"Rodada 38","roundNumber":38,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"02/12/2026"},{"id":"br38_10","league":"brasileirao","home":"Flamengo","away":"Chapecoense","date":"2026-12-02","time":"","round":"Rodada 38","roundNumber":38,"dateType":"basic","status":"open","result":null,"source":"365Scores","dateWindow":"02/12/2026"},{"id":"pl01_01","league":"premier","home":"Arsenal","away":"Coventry City","date":"2026-08-21","time":"16:00","round":"Rodada 1","roundNumber":1,"dateType":"detailed","status":"open","result":null},{"id":"pl01_02","league":"premier","home":"Hull City","away":"Manchester United","date":"2026-08-22","time":"08:30","round":"Rodada 1","roundNumber":1,"dateType":"detailed","status":"open","result":null},{"id":"pl01_03","league":"premier","home":"Everton","away":"Crystal Palace","date":"2026-08-22","time":"11:00","round":"Rodada 1","roundNumber":1,"dateType":"detailed","status":"open","result":null},{"id":"pl01_04","league":"premier","home":"Ipswich Town","away":"Sunderland","date":"2026-08-22","time":"11:00","round":"Rodada 1","roundNumber":1,"dateType":"detailed","status":"open","result":null},{"id":"pl01_05","league":"premier","home":"Nottingham Forest","away":"Leeds United","date":"2026-08-22","time":"11:00","round":"Rodada 1","roundNumber":1,"dateType":"detailed","status":"open","result":null},{"id":"pl01_06","league":"premier","home":"Brentford","away":"Tottenham Hotspur","date":"2026-08-22","time":"13:30","round":"Rodada 1","roundNumber":1,"dateType":"detailed","status":"open","result":null},{"id":"pl01_07","league":"premier","home":"Brighton","away":"Aston Villa","date":"2026-08-23","time":"10:00","round":"Rodada 1","roundNumber":1,"dateType":"detailed","status":"open","result":null},{"id":"pl01_08","league":"premier","home":"Manchester City","away":"AFC Bournemouth","date":"2026-08-23","time":"10:00","round":"Rodada 1","roundNumber":1,"dateType":"detailed","status":"open","result":null},{"id":"pl01_09","league":"premier","home":"Newcastle United","away":"Liverpool","date":"2026-08-23","time":"12:30","round":"Rodada 1","roundNumber":1,"dateType":"detailed","status":"open","result":null},{"id":"pl01_10","league":"premier","home":"Fulham","away":"Chelsea","date":"2026-08-24","time":"16:00","round":"Rodada 1","roundNumber":1,"dateType":"detailed","status":"open","result":null}];
+
+const appState = {
+  session: null,
+  user: null,
+  profile: null,
+  adminAccess: false,
+  isPoolOwner: false,
+  pools: [],
+  currentPoolId: null,
+  matches: [],
+  predictions: {},
+  participants: [],
+  ranking: [],
+  selectedLeague: 'brasileirao',
+  selectedRoundByLeague: {brasileirao:24, premier:1, laliga:1, seriea:1},
+  inviteShare: null
+};
+
+const LEAGUES = {
+  brasileirao: {name:'Brasileirão Série A', icon:'🇧🇷'},
+  premier: {name:'Premier League', icon:'🏴'},
+  laliga: {name:'La Liga', icon:'🇪🇸'},
+  seriea: {name:'Serie A Italiana', icon:'🇮🇹'}
+};
+
+function esc(s='') {
+  return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+
+function toast(msg, danger=false) {
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.style.background=danger?'#3b161a':'#0f2c1c';
+  el.style.borderColor=danger?'#7f1d1d':'#166534';
+  el.style.color=danger?'#fecaca':'#dcfce7';
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+function friendlyError(error) {
+  const raw=String(error?.message||error||'Erro inesperado.');
+  const low=raw.toLowerCase();
+  if(low.includes('invalid login credentials')) return 'E-mail ou senha não conferem. Use “Mostrar” para revisar a senha ou “Esqueci minha senha” se necessário.';
+  if(low.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.';
+  if(low.includes('user already registered')) return 'Este e-mail já está cadastrado.';
+  if(low.includes('password')) return 'Confira a senha. Use pelo menos 8 caracteres.';
+  if(low.includes('duplicate key') && low.includes('invite')) return 'Este código de convite já está em uso.';
+  return raw;
+}
+
+function isAdmin() {
+  return appState.adminAccess === true;
+}
+
+function currentPool() {
+  return appState.pools.find(p=>p.id===appState.currentPoolId) || null;
+}
+
+function leagueName(key) {
+  return (LEAGUES[key]||LEAGUES.brasileirao).name;
+}
+
+function currentRound() {
+  return Number(appState.selectedRoundByLeague[appState.selectedLeague]||1);
+}
+
+function leagueAllMatches(league=appState.selectedLeague) {
+  return appState.matches.filter(m=>m.league===league);
+}
+
+function leagueMatches(league=appState.selectedLeague, round=currentRound()) {
+  return appState.matches.filter(m=>m.league===league && Number(m.round_number)===Number(round));
+}
+
+function formatKickoff(iso) {
+  if(!iso) return '';
+  try {
+    return new Intl.DateTimeFormat('pt-BR',{
+      timeZone:'America/Sao_Paulo',
+      day:'2-digit',month:'2-digit',year:'numeric',
+      hour:'2-digit',minute:'2-digit'
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
+
+function sourceWindow(m) {
+  const s=String(m.source_ref||'');
+  return s.includes('|') ? s.split('|').slice(1).join('|') : '';
+}
+
+function scheduleLabel(m) {
+  if(m.kickoff_at) return formatKickoff(m.kickoff_at);
+  const w=sourceWindow(m);
+  return w ? `${esc(w)} • horário a definir` : 'Data/horário a definir';
+}
+
+function matchState(m) {
+  if(m.status==='finished' || (m.home_score!==null && m.away_score!==null)) {
+    return {closed:true,label:'Encerrado',cls:'gold'};
+  }
+  if(m.status==='cancelled') return {closed:true,label:'Cancelado',cls:'gold'};
+  if(m.status==='postponed') return {closed:true,label:'Adiado',cls:'gold'};
+  if(!m.kickoff_at) return {closed:true,label:'Horário a definir',cls:'gold'};
+  const closesAt=new Date(m.kickoff_at).getTime()-(10*60*1000);
+  if(Date.now()>=closesAt) return {closed:true,label:'Palpites fechados',cls:'gold'};
+  return {closed:false,label:'Aberto',cls:'green'};
+}
+
+function togglePassword(inputId,btn) {
+  const input=document.getElementById(inputId);
+  if(!input) return;
+  const show=input.type==='password';
+  input.type=show?'text':'password';
+  if(btn) btn.textContent=show?'Ocultar':'Mostrar';
+}
+
+function checkCaps(event,warningId) {
+  const warning=document.getElementById(warningId);
+  if(!warning || !event?.getModifierState) return;
+  warning.style.display=event.getModifierState('CapsLock')?'block':'none';
+}
+
+function switchAuth(mode) {
+  const login=mode==='login';
+  document.getElementById('loginPane').classList.toggle('hidden',!login);
+  document.getElementById('registerPane').classList.toggle('hidden',login);
+  document.getElementById('tabLogin').classList.toggle('active',login);
+  document.getElementById('tabRegister').classList.toggle('active',!login);
+}
+
+function openForgotPassword() {
+  const current=document.getElementById('loginEmail')?.value.trim()||'';
+  const input=document.getElementById('forgotEmail');
+  if(input) input.value=current;
+  document.getElementById('forgotPasswordModal').classList.remove('hidden');
+}
+
+async function sendPasswordReset() {
+  const email=document.getElementById('forgotEmail').value.trim().toLowerCase();
+  if(!email.includes('@')) return toast('Informe um e-mail válido.',true);
+
+  const redirectTo='https://saviola968-cmyk.github.io/BOLAO-DA-GALERA/';
+  const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo});
+  if(error) return toast(friendlyError(error),true);
+
+  closeModal('forgotPasswordModal');
+  toast('Se esse e-mail estiver cadastrado, o link de recuperação será enviado.');
+}
+
+async function saveNewPassword() {
+  const p1=document.getElementById('newPassword').value;
+  const p2=document.getElementById('newPasswordConfirm').value;
+
+  if(p1.length<8) return toast('Use pelo menos 8 caracteres.',true);
+  if(p1!==p2) return toast('As senhas não conferem.',true);
+
+  const {error}=await db.auth.updateUser({password:p1});
+  if(error) return toast(friendlyError(error),true);
+
+  document.getElementById('newPassword').value='';
+  document.getElementById('newPasswordConfirm').value='';
+  closeModal('newPasswordModal');
+  toast('Senha alterada com sucesso. Agora você pode entrar em qualquer aparelho.');
+}
+
+async function login() {
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const password=document.getElementById('loginPass').value;
+  if(!email || !password) return toast('Informe e-mail e senha.',true);
+
+  const {error}=await db.auth.signInWithPassword({email,password});
+  if(error) return toast(friendlyError(error),true);
+  toast('Login realizado com segurança.');
+}
+
+async function register() {
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim().toLowerCase();
+  const password=document.getElementById('regPass').value;
+  const confirm=document.getElementById('regPassConfirm').value;
+
+  if(name.length<2) return toast('Informe seu nome.',true);
+  if(!email.includes('@')) return toast('Informe um e-mail válido.',true);
+  if(password.length<8) return toast('Use uma senha com pelo menos 8 caracteres.',true);
+  if(password!==confirm) return toast('As duas senhas precisam ser iguais.',true);
+
+  const {data,error}=await db.auth.signUp({
+    email,
+    password,
+    options:{data:{name}}
+  });
+
+  if(error) return toast(friendlyError(error),true);
+
+  document.getElementById('regPass').value='';
+  document.getElementById('regPassConfirm').value='';
+  if(data.session) {
+    toast('Conta criada e autenticada.');
+  } else {
+    switchAuth('login');
+    toast('Conta criada. Confira seu e-mail para confirmar o cadastro.');
+  }
+}
+
+async function logout() {
+  await db.auth.signOut();
+  clearAppData();
+}
+
+function clearAppData() {
+  appState.session=null;
+  appState.user=null;
+  appState.profile=null;
+  appState.adminAccess=false;
+  appState.isPoolOwner=false;
+  appState.pools=[];
+  appState.currentPoolId=null;
+  appState.matches=[];
+  appState.predictions={};
+  appState.participants=[];
+  appState.ranking=[];
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+}
+
+async function loadProfile() {
+  const [profileRes, accessRes] = await Promise.all([
+    db
+      .from('profiles')
+      .select('id,display_name')
+      .eq('id',appState.user.id)
+      .single(),
+    db.rpc('get_my_access')
+  ]);
+
+  if(profileRes.error) throw profileRes.error;
+  if(accessRes.error) throw accessRes.error;
+
+  appState.profile = profileRes.data;
+  appState.adminAccess = accessRes.data?.is_admin === true;
+}
+
+async function loadPools() {
+  const {data,error}=await db
+    .from('pools')
+    .select('id,name,invite_code,max_participants,entry_fee,created_by,created_at,prize_pct_1,prize_pct_2,prize_pct_3')
+    .order('created_at',{ascending:true});
+  if(error) throw error;
+
+  appState.pools=data||[];
+  const saved=localStorage.getItem('bdg_selected_pool');
+  if(saved && appState.pools.some(p=>p.id===saved)) {
+    appState.currentPoolId=saved;
+  } else {
+    appState.currentPoolId=appState.pools[0]?.id || null;
+  }
+  const cp=currentPool();
+  appState.isPoolOwner=!!(cp && cp.created_by===appState.user?.id);
+}
+
+async function loadCurrentPoolData() {
+  const pool=currentPool();
+  appState.matches=[];
+  appState.predictions={};
+  appState.participants=[];
+  appState.ranking=[];
+
+  if(!pool) return;
+
+  const [matchesRes,predRes,membersRes,rankRes]=await Promise.all([
+    db.from('matches')
+      .select('id,pool_id,league,season,round_number,home_team,away_team,kickoff_at,status,home_score,away_score,source_ref')
+      .eq('pool_id',pool.id)
+      .order('round_number',{ascending:true}),
+    db.from('predictions')
+      .select('match_id,home_score,away_score,updated_at')
+      .eq('user_id',appState.user.id),
+    db.from('pool_members')
+      .select('user_id,joined_at')
+      .eq('pool_id',pool.id)
+      .order('joined_at',{ascending:true}),
+    db.rpc('get_pool_ranking',{p_pool_id:pool.id})
+  ]);
+
+  if(matchesRes.error) throw matchesRes.error;
+  if(predRes.error) throw predRes.error;
+  if(membersRes.error) throw membersRes.error;
+  if(rankRes.error) throw rankRes.error;
+
+  appState.matches=matchesRes.data||[];
+  appState.predictions=Object.fromEntries((predRes.data||[]).map(p=>[p.match_id,p]));
+  appState.ranking=rankRes.data||[];
+
+  const ids=(membersRes.data||[]).map(x=>x.user_id);
+  if(ids.length) {
+    const {data:profiles,error}=await db
+      .from('profiles')
+      .select('id,display_name')
+      .in('id',ids);
+    if(error) throw error;
+    const byId=Object.fromEntries((profiles||[]).map(p=>[p.id,p]));
+    appState.participants=ids.map(id=>byId[id]||{id,display_name:'Participante'});
+  }
+}
+
+async function refreshApp() {
+  if(!appState.user) return;
+  try {
+    await loadProfile();
+    await loadPools();
+    await loadCurrentPoolData();
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    renderAll();
+  } catch(error) {
+    console.error(error);
+    toast(friendlyError(error),true);
+  }
+}
+
+function showPage(page) {
+  if(page==='admin' && !isAdmin()) return toast('Área restrita ao administrador.',true);
+  document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+  const target=document.getElementById('page-'+page);
+  if(target) target.classList.remove('hidden');
+  document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+  if(page==='ranking') renderRanking();
+  if(page==='palpites') renderPredictions();
+  if(page==='tabela') renderFullSchedule();
+  if(page==='admin') renderAdmin();
+}
+
+function refreshRoundSelect() {
+  const select=document.getElementById('roundSelect');
+  if(!select) return;
+  const rounds=[...new Set(leagueAllMatches().map(m=>Number(m.round_number)))].filter(Boolean).sort((a,b)=>a-b);
+  if(!rounds.length) {
+    select.innerHTML='<option value="1">Sem rodadas</option>';
+    return;
+  }
+  let desired=currentRound();
+  if(!rounds.includes(desired)) desired=rounds[0];
+  appState.selectedRoundByLeague[appState.selectedLeague]=desired;
+  select.innerHTML=rounds.map(r=>`<option value="${r}" ${r===desired?'selected':''}>Rodada ${r}</option>`).join('');
+}
+
+function selectRound(round) {
+  appState.selectedRoundByLeague[appState.selectedLeague]=Number(round)||1;
+  renderAll();
+}
+
+function selectLeague(league) {
+  if(!LEAGUES[league]) return;
+  appState.selectedLeague=league;
+  document.querySelectorAll('.league-btn').forEach(b=>b.classList.toggle('active',b.dataset.league===league));
+  const nl=document.getElementById('newLeague');
+  if(nl) nl.value=league;
+  refreshRoundSelect();
+  renderAll();
+}
+
+async function selectPool(poolId) {
+  if(!appState.pools.some(p=>p.id===poolId)) return;
+  appState.currentPoolId=poolId;
+  appState.isPoolOwner=currentPool()?.created_by===appState.user?.id;
+  localStorage.setItem('bdg_selected_pool',poolId);
+  try {
+    await loadCurrentPoolData();
+    renderAll();
+    showPage('home');
+  } catch(error) {
+    toast(friendlyError(error),true);
+  }
+}
+
+function renderPoolSelect() {
+  const sel=document.getElementById('poolSelect');
+  if(!sel) return;
+  if(appState.pools.length<=1) {
+    sel.style.display='none';
+    return;
+  }
+  sel.style.display='inline-block';
+  sel.innerHTML=appState.pools.map(p=>`<option value="${p.id}" ${p.id===appState.currentPoolId?'selected':''}>${esc(p.name)}</option>`).join('');
+}
+
+function renderHeader() {
+  const p=currentPool();
+  const name=appState.profile?.display_name || 'Usuário';
+
+  document.getElementById('currentPoolMini').textContent=p?.name || 'Nenhum bolão';
+  document.getElementById('heroTitle').textContent=p?.name || 'Bolão Da Galera';
+  document.getElementById('capacityChip').textContent=p?`${appState.participants.length}/30 participantes`:'Sem bolão';
+  document.getElementById('userChip').textContent=isAdmin() ? `${name} • Admin` : name;
+  document.getElementById('participantCount').textContent=p?appState.participants.length:0;
+
+  const open=leagueMatches().filter(m=>!matchState(m).closed).length;
+  document.getElementById('openMatches').textContent=open;
+
+  const me=appState.ranking.find(r=>r.user_id===appState.user?.id);
+  const idx=appState.ranking.findIndex(r=>r.user_id===appState.user?.id);
+  document.getElementById('myPosition').textContent=idx>=0?`${idx+1}º`:'—';
+  document.getElementById('myPoints').textContent=me?.points ?? 0;
+
+  const admin=isAdmin();
+  document.getElementById('adminNav').style.display=admin?'flex':'none';
+  document.getElementById('adminNavMobile').style.display=admin?'block':'none';
+  document.getElementById('createPoolBtn').style.display='inline-flex';
+  const inviteBtn=document.getElementById('inviteFriendsBtn');
+  if(inviteBtn) inviteBtn.style.display=p?'inline-flex':'none';
+
+  const delHome=document.getElementById('deletePoolHomeBtn');
+  if(delHome) {
+    const owner=!!(p && appState.isPoolOwner && !isAdmin());
+    const blocked=appState.participants.length>1;
+
+    delHome.style.display=owner?'inline-flex':'none';
+    delHome.disabled=blocked;
+    delHome.style.opacity=blocked?'.55':'1';
+    delHome.title=blocked
+      ? `Exclusão bloqueada: ${appState.participants.length} participantes no bolão`
+      : 'Excluir este bolão';
+
+    const help=document.getElementById('deletePoolHomeHelp');
+    if(help) {
+      help.style.display=(owner && blocked)?'block':'none';
+      help.textContent=blocked
+        ? `🔒 Este bolão já possui ${appState.participants.length} participantes e não pode mais ser excluído.`
+        : '';
+    }
+  }
+
+  renderPoolSelect();
+}
+
+function matchCard(m,mode='prediction') {
+  const state=matchState(m);
+  const pred=appState.predictions[m.id] || {home_score:'',away_score:''};
+  const status=`<span class="pill ${state.cls}">${esc(state.label)}</span>`;
+  const result=(m.home_score!==null && m.away_score!==null)
+    ? `${m.home_score} × ${m.away_score}`
+    : null;
+
+  if(mode==='home') {
+    return `<div class="match">
+      <div class="team">${esc(m.home_team)}</div>
+      <div style="font-weight:900;color:var(--muted)">×</div>
+      <div class="team right">${esc(m.away_team)}</div>
+      ${status}
+      <div class="match-meta">
+        <span><span class="league-tag">${esc(leagueName(m.league))}</span> &nbsp; Rodada ${m.round_number} • ${scheduleLabel(m)}</span>
+        <span>${result?`Resultado: ${result}`:(state.closed?state.label:'Palpites fecham 10 min antes')}</span>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="match">
+    <div class="team">${esc(m.home_team)}</div>
+    <div class="score-inputs">
+      <input id="ph-${m.id}" type="number" min="0" max="30" value="${pred.home_score ?? ''}" ${state.closed?'disabled':''}>
+      <strong>×</strong>
+      <input id="pa-${m.id}" type="number" min="0" max="30" value="${pred.away_score ?? ''}" ${state.closed?'disabled':''}>
+    </div>
+    <div class="team right">${esc(m.away_team)}</div>
+    <button class="btn ${state.closed?'btn-ghost':'btn-primary'}" ${state.closed?'disabled':''} onclick="savePrediction('${m.id}')">${state.closed?'Fechado':'Salvar'}</button>
+    <div class="match-meta">
+      <span><span class="league-tag">${esc(leagueName(m.league))}</span> &nbsp; Rodada ${m.round_number} • ${scheduleLabel(m)}</span>
+      <span>${result?`Resultado oficial: ${result}`:(state.closed?state.label:'Você pode alterar até 10 min antes')}</span>
+    </div>
+  </div>`;
+}
+
+function emptyPoolMessage() {
+  if(isAdmin()) {
+    return '<div class="empty">Nenhum bolão criado ainda. Clique em <strong>Criar bolão</strong> para iniciar.</div>';
+  }
+  return '<div class="empty">Você ainda não participa de um bolão. Você pode <strong>criar um novo bolão</strong> ou entrar em um existente com código.</div>';
+}
+
+function renderHome() {
+  const p=currentPool();
+  const title=document.getElementById('homeLeagueTitle');
+  const rt=document.getElementById('homeRoundTitle');
+  if(title) title.textContent=leagueName(appState.selectedLeague);
+  if(rt) rt.textContent=`Rodada ${currentRound()}`;
+
+  if(!p) {
+    document.getElementById('homeMatches').innerHTML=emptyPoolMessage();
+    return;
+  }
+  const matches=leagueMatches();
+  document.getElementById('homeMatches').innerHTML=matches.map(m=>matchCard(m,'home')).join('') || '<div class="empty">Nenhum jogo nesta rodada.</div>';
+}
+
+function renderPredictions() {
+  const p=currentPool();
+  const title=document.getElementById('predictionLeagueTitle');
+  const rt=document.getElementById('predictionRoundTitle');
+  if(title) title.textContent=leagueName(appState.selectedLeague);
+  if(rt) rt.textContent=`Rodada ${currentRound()}`;
+
+  if(!p) {
+    document.getElementById('predictionMatches').innerHTML=emptyPoolMessage();
+    document.getElementById('savedCountPill').textContent='0 salvos';
+    return;
+  }
+
+  const matches=leagueMatches();
+  document.getElementById('predictionMatches').innerHTML=matches.map(m=>matchCard(m,'prediction')).join('') || '<div class="empty">Nenhum jogo nesta rodada.</div>';
+  const count=matches.filter(m=>appState.predictions[m.id]).length;
+  document.getElementById('savedCountPill').textContent=`${count} salvo${count===1?'':'s'}`;
+}
+
+async function savePrediction(matchId) {
+  const h=parseInt(document.getElementById('ph-'+matchId)?.value,10);
+  const a=parseInt(document.getElementById('pa-'+matchId)?.value,10);
+  if(Number.isNaN(h)||Number.isNaN(a)||h<0||a<0) return toast('Informe os dois placares.',true);
+
+  const {error}=await db.rpc('save_prediction',{
+    p_match_id:matchId,
+    p_home_score:h,
+    p_away_score:a
+  });
+  if(error) return toast(friendlyError(error),true);
+
+  try {
+    await loadCurrentPoolData();
+    renderAll();
+    toast('Palpite salvo no servidor.');
+  } catch(error) {
+    toast(friendlyError(error),true);
+  }
+}
+
+function renderFullSchedule() {
+  const title=document.getElementById('fullScheduleLeagueTitle');
+  const subtitle=document.getElementById('fullScheduleSubtitle');
+  const grid=document.getElementById('fullScheduleGrid');
+  if(!title||!subtitle||!grid) return;
+
+  title.textContent=leagueName(appState.selectedLeague);
+  const all=leagueAllMatches();
+  const rounds=[...new Set(all.map(m=>Number(m.round_number)))].sort((a,b)=>a-b);
+  subtitle.textContent=`${rounds.length} rodada${rounds.length===1?'':'s'} • ${all.length} confronto${all.length===1?'':'s'}`;
+
+  grid.innerHTML=rounds.map(r=>{
+    const games=all.filter(m=>Number(m.round_number)===r);
+    const info=games.find(g=>g.kickoff_at)?.kickoff_at
+      ? scheduleLabel(games.find(g=>g.kickoff_at))
+      : (games[0]?sourceWindow(games[0]):'');
+    return `<div class="round-card">
+      <div class="round-card-head"><strong>Rodada ${r}</strong><span>${esc(info||'Data a definir')}</span></div>
+      <div class="round-games">
+        ${games.map(g=>`<div class="round-game"><span>${esc(g.home_team)}</span><strong>×</strong><span class="away">${esc(g.away_team)}</span></div>`).join('')}
+      </div>
+    </div>`;
+  }).join('') || emptyPoolMessage();
+}
+
+function renderRanking() {
+  const body=document.getElementById('rankingBody');
+  if(!currentPool()) {
+    body.innerHTML='<tr><td colspan="8">Você ainda não participa de um bolão.</td></tr>';
+    return;
+  }
+  body.innerHTML=appState.ranking.map((r,i)=>`
+    <tr>
+      <td class="rank">${i<3?['🥇','🥈','🥉'][i]:i+1}</td>
+      <td><span class="avatar">${esc((r.display_name||'P').charAt(0).toUpperCase())}</span>${esc(r.display_name||'Participante')} ${r.user_id===appState.user.id?'<span class="pill green">Você</span>':''}</td>
+      <td><strong>${r.points}</strong></td>
+      <td>${r.c10}</td><td>${r.c7}</td><td>${r.c5}</td><td>${r.c2}</td><td>${r.predictions_count}</td>
+    </tr>`).join('');
+}
+
+function renderRules() {
+  const p=currentPool();
+  const pct1=Number(p?.prize_pct_1 ?? 60);
+  const pct2=Number(p?.prize_pct_2 ?? 30);
+  const pct3=Number(p?.prize_pct_3 ?? 10);
+  const total=(Number(p?.entry_fee)||0)*appState.participants.length;
+  const money=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+
+  set('ruleExact','10');
+  set('ruleWinnerOneGoal','7');
+  set('ruleWinner','5');
+  set('ruleOneGoal','2');
+  set('prizePool',money(total));
+  set('prize1',`${pct1}% • ${money(total*(pct1/100))}`);
+  set('prize2',`${pct2}% • ${money(total*(pct2/100))}`);
+  set('prize3',`${pct3}% • ${money(total*(pct3/100))}`);
+
+  const card=document.getElementById('ownerPrizeCard');
+  if(card) card.style.display=appState.isPoolOwner && !isAdmin() ? 'block' : 'none';
+  const o1=document.getElementById('ownerPrize1');
+  const o2=document.getElementById('ownerPrize2');
+  const o3=document.getElementById('ownerPrize3');
+  if(o1) o1.value=pct1;
+  if(o2) o2.value=pct2;
+  if(o3) o3.value=pct3;
+
+  const delBtn=document.getElementById('deletePoolBtn');
+  const delHelp=document.getElementById('deletePoolHelp');
+  if(delBtn && delHelp) {
+    const count=appState.participants.length;
+    const blocked=count>1;
+    delBtn.disabled=blocked;
+    delBtn.style.opacity=blocked?'.55':'1';
+    delHelp.textContent=blocked
+      ? `Exclusão bloqueada: este bolão já possui ${count} participantes.`
+      : 'Você pode excluir enquanto for o único participante do bolão.';
+  }
+}
+
+async function saveOwnerPrizes() {
+  const p=currentPool();
+  if(!p) return toast('Nenhum bolão selecionado.',true);
+
+  const p1=parseFloat(document.getElementById('ownerPrize1').value||'0');
+  const p2=parseFloat(document.getElementById('ownerPrize2').value||'0');
+  const p3=parseFloat(document.getElementById('ownerPrize3').value||'0');
+  if([p1,p2,p3].some(Number.isNaN) || Math.abs((p1+p2+p3)-100)>0.001) {
+    return toast('A premiação precisa somar 100%.',true);
+  }
+
+  const {error}=await db.rpc('update_my_pool_prizes',{
+    p_pool_id:p.id,
+    p_prize_pct_1:p1,
+    p_prize_pct_2:p2,
+    p_prize_pct_3:p3
+  });
+  if(error) return toast(friendlyError(error),true);
+
+  await loadPools();
+  appState.isPoolOwner=currentPool()?.created_by===appState.user?.id;
+  renderAll();
+  toast('Divisão da premiação atualizada.');
+}
+
+async function deleteCurrentPool() {
+  const p=currentPool();
+  if(!p) return toast('Nenhum bolão selecionado.',true);
+
+  if(!appState.isPoolOwner || isAdmin()) {
+    return toast('Somente quem criou o bolão pode excluí-lo.',true);
+  }
+
+  const count=appState.participants.length;
+  if(count>1) {
+    return toast('Este bolão já tem outros participantes e não pode mais ser excluído.',true);
+  }
+
+  const ok=confirm(
+    `Excluir o bolão "${p.name}"?\n\n` +
+    `Esta ação apaga o bolão e seus dados. Só é permitida enquanto você estiver sozinho no grupo.`
+  );
+  if(!ok) return;
+
+  const typed=prompt(`Para confirmar, digite EXCLUIR:`);
+  if(String(typed||'').trim().toUpperCase()!=='EXCLUIR') {
+    return toast('Exclusão cancelada.',true);
+  }
+
+  const {error}=await db.rpc('delete_my_pool',{p_pool_id:p.id});
+  if(error) return toast(friendlyError(error),true);
+
+  localStorage.removeItem('bdg_selected_pool');
+  appState.currentPoolId=null;
+  appState.isPoolOwner=false;
+
+  await loadPools();
+  await loadCurrentPoolData();
+  renderAll();
+  showPage('home');
+  toast('Bolão excluído com sucesso.');
+}
+
+function adminMatchCard(m) {
+  const has=m.home_score!==null && m.away_score!==null;
+  return `<div class="match">
+    <div class="team">${esc(m.home_team)}</div>
+    <div class="score-inputs">
+      <input id="rh-${m.id}" type="number" min="0" max="30" value="${has?m.home_score:''}">
+      <strong>×</strong>
+      <input id="ra-${m.id}" type="number" min="0" max="30" value="${has?m.away_score:''}">
+    </div>
+    <div class="team right">${esc(m.away_team)}</div>
+    <button class="btn btn-secondary" onclick="setResult('${m.id}')">${has?'Atualizar':'Lançar resultado'}</button>
+    <div class="match-meta">
+      <span><span class="league-tag">${esc(leagueName(m.league))}</span> &nbsp; Rodada ${m.round_number} • ${scheduleLabel(m)}</span>
+      <span>${has?'Resultado lançado':'Aguardando resultado'}</span>
+    </div>
+  </div>`;
+}
+
+function renderAdmin() {
+  if(!isAdmin()) return;
+  const p=currentPool();
+  const matches=leagueMatches();
+  const title=document.getElementById('adminLeagueTitle');
+  const rt=document.getElementById('adminRoundTitle');
+  if(title) title.textContent=leagueName(appState.selectedLeague);
+  if(rt) rt.textContent=`Rodada ${currentRound()}`;
+
+  document.getElementById('adminMatches').innerHTML=p
+    ? (matches.map(adminMatchCard).join('') || '<div class="empty">Nenhum jogo nesta rodada.</div>')
+    : '<div class="empty">Crie um bolão primeiro.</div>';
+
+  document.getElementById('poolNameInput').value=p?.name||'';
+  document.getElementById('entryFee').value=Number(p?.entry_fee||0).toFixed(2);
+  document.getElementById('participantSubtitle').textContent=p
+    ? `${appState.participants.length} de 30 vagas ocupadas. Código: ${p.invite_code}`
+    : 'Nenhum bolão criado.';
+
+  document.getElementById('participantsBox').innerHTML=appState.participants.map(u=>`
+    <span class="person-chip">${esc(u.display_name||'Participante')}</span>
+  `).join('') || '<span class="person-chip">Sem participantes</span>';
+
+  const imp=document.getElementById('importFixturesBtn');
+  if(imp) {
+    imp.disabled=!p || appState.matches.length>0;
+    imp.textContent=appState.matches.length>0?'Calendário carregado':'Recarregar calendário (suporte)';
+  }
+}
+
+async function addMatch() {
+  if(!isAdmin()) return toast('Acesso negado.',true);
+  const p=currentPool();
+  if(!p) return toast('Crie um bolão primeiro.',true);
+
+  const league=document.getElementById('newLeague').value;
+  const home=document.getElementById('newHome').value.trim();
+  const away=document.getElementById('newAway').value.trim();
+  const date=document.getElementById('newDate').value;
+  const time=document.getElementById('newTime').value;
+  const roundText=document.getElementById('newRound').value.trim();
+  const rn=Number((roundText.match(/\d+/)||[])[0]||currentRound());
+
+  if(!home||!away||!date||!time) return toast('Preencha times, data e hora.',true);
+  const kickoff=new Date(`${date}T${time}:00-03:00`).toISOString();
+
+  const {error}=await db.from('matches').insert({
+    pool_id:p.id,
+    league,
+    season:league==='premier'?'2026/27':'2026',
+    round_number:rn,
+    home_team:home,
+    away_team:away,
+    kickoff_at:kickoff,
+    status:'scheduled',
+    source_ref:'Cadastro manual'
+  });
+  if(error) return toast(friendlyError(error),true);
+
+  ['newHome','newAway','newDate','newTime','newRound'].forEach(id=>document.getElementById(id).value='');
+  await loadCurrentPoolData();
+  renderAll();
+  showPage('admin');
+  toast('Partida adicionada.');
+}
+
+async function setResult(matchId) {
+  if(!isAdmin()) return toast('Acesso negado.',true);
+  const h=parseInt(document.getElementById('rh-'+matchId)?.value,10);
+  const a=parseInt(document.getElementById('ra-'+matchId)?.value,10);
+  if(Number.isNaN(h)||Number.isNaN(a)||h<0||a<0) return toast('Informe o placar oficial.',true);
+
+  const {error}=await db
+    .from('matches')
+    .update({home_score:h,away_score:a,status:'finished'})
+    .eq('id',matchId);
+  if(error) return toast(friendlyError(error),true);
+
+  await loadCurrentPoolData();
+  renderAll();
+  showPage('admin');
+  toast('Resultado salvo. Ranking recalculado no servidor.');
+}
+
+async function saveSettings() {
+  if(!isAdmin()) return toast('Acesso negado.',true);
+  const p=currentPool();
+  if(!p) return toast('Crie um bolão primeiro.',true);
+
+  const name=document.getElementById('poolNameInput').value.trim();
+  const fee=parseFloat(document.getElementById('entryFee').value||'0');
+  if(name.length<3 || Number.isNaN(fee) || fee<0) return toast('Confira nome e valor.',true);
+
+  const {error}=await db
+    .from('pools')
+    .update({name,entry_fee:fee})
+    .eq('id',p.id);
+  if(error) return toast(friendlyError(error),true);
+
+  await loadPools();
+  await loadCurrentPoolData();
+  renderAll();
+  showPage('admin');
+  toast('Configurações salvas.');
+}
+
+function openJoinModal() {
+  document.getElementById('joinModal').classList.remove('hidden');
+}
+
+function openPoolModal() {
+  document.getElementById('poolModal').classList.remove('hidden');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+
+async function joinPool() {
+  const code=document.getElementById('joinCode').value.trim().toUpperCase();
+  if(code.length<4) return toast('Informe o código do bolão.',true);
+
+  const {data,error}=await db.rpc('join_pool',{p_invite_code:code});
+  if(error) return toast(friendlyError(error),true);
+
+  closeModal('joinModal');
+  await loadPools();
+  appState.currentPoolId=data;
+  localStorage.setItem('bdg_selected_pool',data);
+  await loadCurrentPoolData();
+  renderAll();
+
+  try {
+    const url=new URL(window.location.href);
+    url.searchParams.delete('invite');
+    window.history.replaceState({},'',url.pathname + (url.search ? url.search : '') + url.hash);
+  } catch {}
+
+  toast('Você entrou no bolão.');
+}
+
+async function createPool() {
+  const name=document.getElementById('createPoolName').value.trim();
+  const code=document.getElementById('createPoolCode').value.trim().toUpperCase();
+  const p1=parseFloat(document.getElementById('createPrize1').value||'0');
+  const p2=parseFloat(document.getElementById('createPrize2').value||'0');
+  const p3=parseFloat(document.getElementById('createPrize3').value||'0');
+
+  if(name.length<3 || code.length<4) return toast('Informe nome e código de convite.',true);
+  if([p1,p2,p3].some(Number.isNaN) || Math.abs((p1+p2+p3)-100)>0.001) {
+    return toast('A premiação precisa somar 100%.',true);
+  }
+
+  const {data,error}=await db.rpc('create_pool_secure',{
+    p_name:name,
+    p_invite_code:code,
+    p_prize_pct_1:p1,
+    p_prize_pct_2:p2,
+    p_prize_pct_3:p3
+  });
+  if(error) return toast(friendlyError(error),true);
+
+  closeModal('poolModal');
+  await loadPools();
+  appState.currentPoolId=data;
+  appState.isPoolOwner=currentPool()?.created_by===appState.user?.id;
+  localStorage.setItem('bdg_selected_pool',data);
+  await loadCurrentPoolData();
+  renderAll();
+  toast('Bolão criado! Os jogos foram carregados automaticamente.');
+}
+
+async function inviteFriends() {
+  const p=currentPool();
+  if(!p) return toast('Entre ou crie um bolão primeiro.',true);
+
+  const {data,error}=await db.rpc('get_pool_invite',{p_pool_id:p.id});
+  if(error) return toast(friendlyError(error),true);
+
+  const base='https://saviola968-cmyk.github.io/BOLAO-DA-GALERA/';
+  const inviteUrl=`${base}?invite=${encodeURIComponent(data.invite_code)}`;
+  const fullMessage=`⚽ Bolão Da Galera
+
+Entre no bolão "${data.name}"!
+Código: ${data.invite_code}
+
+${inviteUrl}`;
+
+  appState.inviteShare={
+    name:data.name,
+    code:data.invite_code,
+    url:inviteUrl,
+    message:fullMessage
+  };
+
+  const linkInput=document.getElementById('shareInviteLink');
+  const codeEl=document.getElementById('shareInviteCode');
+  if(linkInput) linkInput.value=inviteUrl;
+  if(codeEl) codeEl.textContent=data.invite_code;
+
+  document.getElementById('shareInviteModal').classList.remove('hidden');
+}
+
+async function copyInviteLink() {
+  const info=appState.inviteShare;
+  if(!info) return;
+
+  try {
+    await navigator.clipboard.writeText(info.url);
+    toast('Link copiado!');
+  } catch {
+    const input=document.getElementById('shareInviteLink');
+    if(input) {
+      input.focus();
+      input.select();
+      document.execCommand('copy');
+      toast('Link copiado!');
+    }
+  }
+}
+
+async function copyFullInvite() {
+  const info=appState.inviteShare;
+  if(!info) return;
+
+  try {
+    await navigator.clipboard.writeText(info.message);
+    toast('Convite completo copiado!');
+  } catch {
+    prompt('Copie o convite:',info.message);
+  }
+}
+
+function shareViaWhatsApp() {
+  const info=appState.inviteShare;
+  if(!info) return;
+  const url=`https://wa.me/?text=${encodeURIComponent(info.message)}`;
+  window.open(url,'_blank','noopener');
+}
+
+async function nativeShareInvite() {
+  const info=appState.inviteShare;
+  if(!info) return;
+
+  if(!navigator.share) {
+    return copyInviteLink();
+  }
+
+  try {
+    await navigator.share({
+      title:`Bolão Da Galera - ${info.name}`,
+      text:`Entre no bolão "${info.name}" usando o código ${info.code}`,
+      url:info.url
+    });
+  } catch(e) {
+    if(e?.name!=='AbortError') {
+      await copyInviteLink();
+    }
+  }
+}
+
+function fixtureKickoff(f) {
+  if(!f.date || !f.time) return null;
+  try {
+    return new Date(`${f.date}T${f.time}:00-03:00`).toISOString();
+  } catch {
+    return null;
+  }
+}
+
+async function importDefaultFixtures() {
+  if(!isAdmin()) return toast('Acesso negado.',true);
+  const p=currentPool();
+  if(!p) return toast('Crie um bolão primeiro.',true);
+  if(appState.matches.length>0) return toast('Este bolão já possui calendário carregado.',true);
+
+  const rows=DEFAULT_FIXTURES.map(f=>({
+    pool_id:p.id,
+    league:f.league,
+    season:f.league==='premier'?'2026/27':'2026',
+    round_number:Number(f.roundNumber||1),
+    home_team:f.home,
+    away_team:f.away,
+    kickoff_at:fixtureKickoff(f),
+    status:f.status==='closed'?'finished':'scheduled',
+    source_ref:`${f.source||'Agenda'}|${f.dateWindow||f.date||''}`
+  }));
+
+  const chunks=[];
+  for(let i=0;i<rows.length;i+=80) chunks.push(rows.slice(i,i+80));
+
+  for(let i=0;i<chunks.length;i++) {
+    const {error}=await db.from('matches').upsert(chunks[i],{
+      onConflict:'pool_id,league,season,round_number,home_team,away_team',
+      ignoreDuplicates:true
+    });
+    if(error) return toast(`Falha ao importar lote ${i+1}: ${friendlyError(error)}`,true);
+  }
+
+  await loadCurrentPoolData();
+  refreshRoundSelect();
+  renderAll();
+  toast(`Calendário carregado: ${appState.matches.length} jogos.`);
+}
+
+function renderAll() {
+  document.querySelectorAll('.league-btn').forEach(b=>b.classList.toggle('active',b.dataset.league===appState.selectedLeague));
+  const nl=document.getElementById('newLeague');
+  if(nl) nl.value=appState.selectedLeague;
+  refreshRoundSelect();
+  renderHeader();
+  renderHome();
+  renderPredictions();
+  renderFullSchedule();
+  renderRanking();
+  renderRules();
+  renderAdmin();
+}
+
+function getInviteCodeFromUrl() {
+  try {
+    const params=new URLSearchParams(window.location.search);
+    const code=(params.get('invite')||'').trim().toUpperCase();
+    return code.length>=4 ? code : '';
+  } catch {
+    return '';
+  }
+}
+
+function applyInviteFromUrl() {
+  const code=getInviteCodeFromUrl();
+  if(!code) return;
+
+  const input=document.getElementById('joinCode');
+  if(input) input.value=code;
+
+  const box=document.getElementById('inviteDetectedBox');
+  if(box) box.classList.remove('hidden');
+
+  // Se já estiver autenticado, abre direto a tela para confirmar entrada.
+  if(appState.user) {
+    document.getElementById('joinModal').classList.remove('hidden');
+  }
+}
+
+async function boot() {
+  const {data,error}=await db.auth.getSession();
+  if(error) {
+    toast(friendlyError(error),true);
+    return;
+  }
+
+  appState.session=data.session;
+  appState.user=data.session?.user||null;
+
+  if(!appState.user) {
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+    const code=getInviteCodeFromUrl();
+    if(code) {
+      const input=document.getElementById('joinCode');
+      if(input) input.value=code;
+    }
+    return;
+  }
+
+  await refreshApp();
+  showPage('home');
+  setTimeout(applyInviteFromUrl,150);
+}
+
+db.auth.onAuthStateChange((event,session)=>{
+  setTimeout(async()=>{
+    appState.session=session;
+    appState.user=session?.user||null;
+
+    if(event==='PASSWORD_RECOVERY') {
+      document.getElementById('loginScreen').classList.remove('hidden');
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('newPasswordModal').classList.remove('hidden');
+      return;
+    }
+
+    if(!appState.user) {
+      clearAppData();
+      return;
+    }
+
+    await refreshApp();
+    showPage('home');
+    setTimeout(applyInviteFromUrl,150);
+  },0);
+});
+
+boot();
+</script>
+
+</body>
+</html>
