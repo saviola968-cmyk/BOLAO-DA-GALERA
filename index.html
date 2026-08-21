@@ -395,7 +395,7 @@
           <div>Bolão da Galera<small id="currentPoolMini">Meu Bolão</small></div>
         </div>
         <div class="top-actions">
-          <span class="chip" id="dbChip">🟢 Supabase • V12.5</span>
+          <span class="chip" id="dbChip">🟢 Supabase • V12.6</span>
           <select class="chip" id="poolSelect" onchange="selectPool(this.value)" style="display:none"></select>
           <span class="chip" id="capacityChip">0/30 participantes</span>
           <span class="chip" id="userChip">Usuário</span>
@@ -643,6 +643,10 @@
               <div class="field"><label>🥉 3º lugar (%)</label><input id="ownerPrize3" type="number" min="0" max="100"></div>
               <button class="btn btn-secondary full" onclick="saveOwnerPrizes()">Salvar divisão da premiação</button>
               <button class="btn btn-primary full" onclick="inviteFriends()">📨 Convidar amigos</button>
+              <div class="full" style="margin-top:8px;padding-top:12px;border-top:1px solid var(--border)">
+                <button id="deletePoolBtn" class="btn btn-danger" style="width:100%" onclick="deleteCurrentPool()">🗑️ Excluir bolão</button>
+                <div id="deletePoolHelp" style="margin-top:7px;color:var(--muted);font-size:12px;line-height:1.45"></div>
+              </div>
             </div>
           </div>
 
@@ -1412,6 +1416,18 @@ function renderRules() {
   if(o1) o1.value=pct1;
   if(o2) o2.value=pct2;
   if(o3) o3.value=pct3;
+
+  const delBtn=document.getElementById('deletePoolBtn');
+  const delHelp=document.getElementById('deletePoolHelp');
+  if(delBtn && delHelp) {
+    const count=appState.participants.length;
+    const blocked=count>1;
+    delBtn.disabled=blocked;
+    delBtn.style.opacity=blocked?'.55':'1';
+    delHelp.textContent=blocked
+      ? `Exclusão bloqueada: este bolão já possui ${count} participantes.`
+      : 'Você pode excluir enquanto for o único participante do bolão.';
+  }
 }
 
 async function saveOwnerPrizes() {
@@ -1437,6 +1453,44 @@ async function saveOwnerPrizes() {
   appState.isPoolOwner=currentPool()?.created_by===appState.user?.id;
   renderAll();
   toast('Divisão da premiação atualizada.');
+}
+
+async function deleteCurrentPool() {
+  const p=currentPool();
+  if(!p) return toast('Nenhum bolão selecionado.',true);
+
+  if(!appState.isPoolOwner || isAdmin()) {
+    return toast('Somente quem criou o bolão pode excluí-lo.',true);
+  }
+
+  const count=appState.participants.length;
+  if(count>1) {
+    return toast('Este bolão já tem outros participantes e não pode mais ser excluído.',true);
+  }
+
+  const ok=confirm(
+    `Excluir o bolão "${p.name}"?\n\n` +
+    `Esta ação apaga o bolão e seus dados. Só é permitida enquanto você estiver sozinho no grupo.`
+  );
+  if(!ok) return;
+
+  const typed=prompt(`Para confirmar, digite EXCLUIR:`);
+  if(String(typed||'').trim().toUpperCase()!=='EXCLUIR') {
+    return toast('Exclusão cancelada.',true);
+  }
+
+  const {error}=await db.rpc('delete_my_pool',{p_pool_id:p.id});
+  if(error) return toast(friendlyError(error),true);
+
+  localStorage.removeItem('bdg_selected_pool');
+  appState.currentPoolId=null;
+  appState.isPoolOwner=false;
+
+  await loadPools();
+  await loadCurrentPoolData();
+  renderAll();
+  showPage('home');
+  toast('Bolão excluído com sucesso.');
 }
 
 function adminMatchCard(m) {
